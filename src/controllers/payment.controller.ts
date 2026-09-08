@@ -124,15 +124,21 @@ router.patch(
       return;
     }
 
-    const { action, rejection_reason, extend_months = 1 } = req.body; // 'approve' | 'reject'
+    const { action, rejection_reason, extend_months = 1, actual_amount } = req.body; // 'approve' | 'reject'
     const now = new Date().toISOString();
 
     if (action === 'approve') {
-      db.update('payments', req.params.id, {
+      const paymentUpdates: any = {
         status: 'approved',
         reviewed_at: now,
         reviewed_by: req.user!.id,
-      });
+      };
+
+      if (actual_amount && !isNaN(parseFloat(actual_amount))) {
+        paymentUpdates.amount = parseFloat(actual_amount);
+      }
+
+      db.update('payments', req.params.id, paymentUpdates);
 
       // Update subscription & extend expiry
       const subscription = db.findOne('subscriptions', (s: any) => s.restaurant_id === payment.restaurant_id);
@@ -143,11 +149,15 @@ router.patch(
       newExpiry.setMonth(newExpiry.getMonth() + parseInt(extend_months));
 
       if (subscription) {
-        db.update('subscriptions', subscription.id, {
+        const subUpdates: any = {
           status: 'active',
           payment_status: 'paid',
           expiry_date: newExpiry.toISOString(),
-        });
+        };
+        if (actual_amount && !isNaN(parseFloat(actual_amount))) {
+          subUpdates.amount = parseFloat(actual_amount);
+        }
+        db.update('subscriptions', subscription.id, subUpdates);
       }
 
       // Ensure restaurant is active

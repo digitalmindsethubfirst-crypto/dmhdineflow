@@ -18,14 +18,13 @@ const storage = multer.diskStorage({
 });
 
 const fileFilter = (_req: any, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
-  const allowed = ['.jpg', '.jpeg', '.png', '.webp'];
+  const allowed = ['.jpg', '.jpeg', '.png', '.webp', '.gif', '.svg'];
   const ext = path.extname(file.originalname).toLowerCase();
-  const mimeAllowed = ['image/jpeg', 'image/png', 'image/webp'];
 
-  if (allowed.includes(ext) && mimeAllowed.includes(file.mimetype)) {
+  if (allowed.includes(ext) || file.mimetype.startsWith('image/')) {
     cb(null, true);
   } else {
-    cb(new Error('Only JPG, JPEG, PNG, and WebP images are allowed.'));
+    cb(new Error('Only JPG, JPEG, PNG, WebP, GIF, and SVG images are allowed.'));
   }
 };
 

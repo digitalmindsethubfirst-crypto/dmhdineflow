@@ -51,7 +51,11 @@ router.patch('/restaurants/:restaurantId/settings', verifyToken, requireRole('su
   if (req.body.service_charge_rate !== undefined) updates.service_charge_rate = parseFloat(req.body.service_charge_rate) || 0;
   if (req.body.currency !== undefined) updates.currency = req.body.currency;
 
-  if (files?.logo?.[0]) updates.logo = `/uploads/${files.logo[0].filename}`;
+  if (files?.logo?.[0]) {
+    updates.logo = `/uploads/${files.logo[0].filename}`;
+  } else if (req.body.delete_logo === 'true' || req.body.delete_logo === true) {
+    updates.logo = '';
+  }
   if (files?.cover_image?.[0]) updates.cover_image = `/uploads/${files.cover_image[0].filename}`;
 
   const updatedRestaurant = db.update('restaurants', req.params.restaurantId, updates);

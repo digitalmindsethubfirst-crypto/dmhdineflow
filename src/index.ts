@@ -33,8 +33,8 @@ if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
 
-// Serve uploaded assets
-app.use('/uploads', express.static(uploadDir));
+// Serve uploaded assets with CORS support
+app.use('/uploads', cors(), express.static(uploadDir));
 
 // API Routes
 app.use('/api', routes);
