@@ -38,7 +38,7 @@ router.post(
       id: paymentId,
       restaurant_id: restaurantId,
       subscription_id: subscription?.id,
-      amount: parseFloat(amount) || subscription?.amount || 5000,
+      amount: parseFloat(amount) || (subscription?.amount ? subscription.amount : 0),
       screenshot_url: screenshotUrl,
       transaction_reference: transaction_reference || '',
       notes: notes || '',

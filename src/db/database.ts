@@ -109,6 +109,11 @@ export interface Order {
   total: number;
   customer_name?: string;
   customer_note?: string;
+  payment_status?: 'pending' | 'paid' | 'waived';
+  payment_method?: 'cash' | 'card' | 'online' | 'other';
+  amount_paid?: number;
+  change_amount?: number;
+  paid_at?: string;
   created_at: string;
   updated_at: string;
 }

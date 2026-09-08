@@ -105,7 +105,11 @@ router.patch('/menu-items/:id', verifyToken, requireRole('super_admin', 'restaur
   if (req.body.base_price) updates.base_price = parseFloat(req.body.base_price);
   if (req.body.sort_order !== undefined) updates.sort_order = parseInt(req.body.sort_order);
   if (req.body.available !== undefined) updates.available = req.body.available === true || req.body.available === 'true';
-  if (req.file) updates.image = `/uploads/${req.file.filename}`;
+  if (req.file) {
+    updates.image = `/uploads/${req.file.filename}`;
+  } else if (req.body.delete_image === 'true' || req.body.delete_image === true) {
+    updates.image = '';
+  }
 
   const updated = db.update('menu_items', req.params.id, updates);
 

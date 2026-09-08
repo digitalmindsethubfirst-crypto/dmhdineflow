@@ -277,4 +277,61 @@ router.patch('/orders/:id/status', verifyToken, requireRole('super_admin', 'rest
   res.json(fullOrder);
 });
 
+// PATCH /api/orders/:id/payment (Owner records actual payment received and approves order)
+router.patch('/orders/:id/payment', verifyToken, requireRole('super_admin', 'restaurant_owner'), (req: AuthRequest, res: Response) => {
+  const order = db.findById('orders', req.params.id);
+  if (!order) { res.status(404).json({ error: 'Order not found.' }); return; }
+
+  if (req.user!.role !== 'super_admin' && req.user!.restaurant_id !== order.restaurant_id) {
+    res.status(403).json({ error: 'Access denied.' }); return;
+  }
+
+  const { amount_paid, payment_method, auto_complete } = req.body;
+  const numPaid = parseFloat(amount_paid);
+
+  if (isNaN(numPaid) || numPaid < 0) {
+    res.status(400).json({ error: 'Please enter a valid payment amount.' });
+    return;
+  }
+
+  const changeAmount = Math.max(0, numPaid - order.total);
+  const now = new Date().toISOString();
+
+  const updates: any = {
+    payment_status: 'paid',
+    amount_paid: numPaid,
+    change_amount: changeAmount,
+    payment_method: payment_method || 'cash',
+    paid_at: now,
+  };
+
+  if (auto_complete || order.status === 'ready' || order.status === 'cooking' || order.status === 'accepted' || order.status === 'new') {
+    updates.status = 'completed';
+  }
+
+  const updated = db.update('orders', req.params.id, updates);
+  const table = db.findById('tables', order.table_id);
+  const orderItems = db.find('order_items', (oi: any) => oi.order_id === order.id);
+
+  const fullOrder = { ...updated, table_number: table?.table_number || '?', items: orderItems };
+
+  db.insert('audit_logs', {
+    id: uuid(), user_id: req.user!.id, restaurant_id: order.restaurant_id,
+    action: 'order_payment_recorded', entity_type: 'order', entity_id: order.id,
+    metadata: JSON.stringify({ order_number: order.order_number, amount_paid: numPaid, change_amount: changeAmount, payment_method: payment_method || 'cash' }),
+    created_at: now,
+  });
+
+  // Socket emit
+  const io = (global as any).__io;
+  if (io) {
+    io.to(`restaurant_${order.restaurant_id}`).emit('order:status_updated', fullOrder);
+    io.to(`kitchen_${order.restaurant_id}`).emit('order:status_updated', fullOrder);
+    io.to(`session_${order.table_session_id}`).emit('order:status_updated', fullOrder);
+  }
+
+  res.json(fullOrder);
+});
+
 export default router;
+
