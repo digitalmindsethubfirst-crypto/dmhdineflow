@@ -1,8 +1,11 @@
 import { Router, Response } from 'express';
 import bcrypt from 'bcryptjs';
+import path from 'path';
+import fs from 'fs';
 import { v4 as uuid } from 'uuid';
 import { db } from '../db/database';
 import { AuthRequest, verifyToken, requireRole } from '../middleware/auth';
+import { config } from '../config/env';
 
 const router = Router();
 
@@ -205,24 +208,84 @@ router.patch('/restaurants/:id/status', verifyToken, requireRole('super_admin'),
   res.json({ message: `Restaurant ${status} successfully.` });
 });
 
-// DELETE /api/admin/restaurants/:id
+// DELETE /api/admin/restaurants/:id (Complete cascade delete of restaurant and all associated data)
 router.delete('/restaurants/:id', verifyToken, requireRole('super_admin'), (req: AuthRequest, res: Response) => {
-  const restaurant = db.findById('restaurants', req.params.id);
+  const restaurantId = req.params.id;
+  const restaurant = db.findById('restaurants', restaurantId);
   if (!restaurant) {
     res.status(404).json({ error: 'Restaurant not found.' });
     return;
   }
 
-  // Soft delete - just set inactive
-  db.update('restaurants', req.params.id, { status: 'inactive' });
+  // 1. Collect all associated file paths for cleanup
+  const filesToDelete: string[] = [];
+  if (restaurant.logo) filesToDelete.push(restaurant.logo);
+  if (restaurant.cover_image) filesToDelete.push(restaurant.cover_image);
 
-  db.insert('audit_logs', {
-    id: uuid(), user_id: req.user!.id, restaurant_id: req.params.id,
-    action: 'restaurant_deleted', entity_type: 'restaurant', entity_id: req.params.id,
-    metadata: JSON.stringify({ name: restaurant.name }), created_at: new Date().toISOString(),
+  // Categories
+  const categories = db.find('categories', (c: any) => c.restaurant_id === restaurantId);
+  categories.forEach((c: any) => {
+    if (c.image) filesToDelete.push(c.image);
   });
 
-  res.json({ message: 'Restaurant deactivated successfully.' });
+  // Menu items & item variants
+  const menuItems = db.find('menu_items', (m: any) => m.restaurant_id === restaurantId);
+  const menuItemIds = menuItems.map((m: any) => m.id);
+  menuItems.forEach((m: any) => {
+    if (m.image) filesToDelete.push(m.image);
+  });
+
+  // Orders & order items
+  const orders = db.find('orders', (o: any) => o.restaurant_id === restaurantId);
+  const orderIds = orders.map((o: any) => o.id);
+
+  // Payments
+  const payments = db.find('payments', (p: any) => p.restaurant_id === restaurantId);
+  payments.forEach((p: any) => {
+    if (p.screenshot_url) filesToDelete.push(p.screenshot_url);
+  });
+
+  // 2. Delete physical files from disk
+  const uploadDir = path.resolve(config.uploadDir);
+  filesToDelete.forEach((fileRelPath) => {
+    try {
+      const filename = path.basename(fileRelPath);
+      const fullPath = path.join(uploadDir, filename);
+      if (fs.existsSync(fullPath)) {
+        fs.unlinkSync(fullPath);
+      }
+    } catch (err) {
+      console.warn('Could not delete file during restaurant purge:', fileRelPath, err);
+    }
+  });
+
+  // 3. Cascade delete all database records
+  db.deleteWhere('order_items', (oi: any) => orderIds.includes(oi.order_id));
+  db.deleteWhere('orders', (o: any) => o.restaurant_id === restaurantId);
+  db.deleteWhere('table_sessions', (ts: any) => ts.restaurant_id === restaurantId);
+  db.deleteWhere('tables', (t: any) => t.restaurant_id === restaurantId);
+  db.deleteWhere('item_variants', (iv: any) => menuItemIds.includes(iv.item_id));
+  db.deleteWhere('menu_items', (m: any) => m.restaurant_id === restaurantId);
+  db.deleteWhere('categories', (c: any) => c.restaurant_id === restaurantId);
+  db.deleteWhere('payments', (p: any) => p.restaurant_id === restaurantId);
+  db.deleteWhere('subscriptions', (s: any) => s.restaurant_id === restaurantId);
+  db.deleteWhere('users', (u: any) => u.restaurant_id === restaurantId);
+  db.delete('restaurants', restaurantId);
+
+  db.insert('audit_logs', {
+    id: uuid(),
+    user_id: req.user!.id,
+    restaurant_id: restaurantId,
+    action: 'restaurant_completely_deleted',
+    entity_type: 'restaurant',
+    entity_id: restaurantId,
+    metadata: JSON.stringify({ name: restaurant.name, deleted_at: new Date().toISOString() }),
+    created_at: new Date().toISOString(),
+  });
+
+  db.forceSave();
+
+  res.json({ message: `Restaurant "${restaurant.name}" and all associated data permanently deleted.` });
 });
 
 // GET /api/admin/audit-logs
