@@ -5,6 +5,82 @@ import { AuthRequest, verifyToken, requireRole, requireRestaurant } from '../mid
 
 const router = Router();
 
+// GET /api/customer/restaurant/:slug  (Public Online Ordering Endpoint - Remote/No QR)
+router.get('/customer/restaurant/:slug', (req: Request, res: Response) => {
+  const { slug } = req.params;
+
+  // 1. Find restaurant by slug (case-insensitive)
+  const restaurant = db.findOne('restaurants', (r: any) => r.slug?.toLowerCase() === slug?.toLowerCase());
+  if (!restaurant) {
+    res.status(404).json({ error: 'Restaurant not found.', status: 'not_found' });
+    return;
+  }
+
+  // 2. Check restaurant status
+  if (restaurant.status === 'suspended') {
+    res.status(403).json({
+      error: 'This restaurant account is currently suspended. Please contact restaurant administration.',
+      status: 'suspended',
+      restaurant_name: restaurant.name,
+    });
+    return;
+  }
+
+  if (restaurant.status === 'inactive') {
+    res.status(403).json({
+      error: 'This restaurant is currently inactive.',
+      status: 'inactive',
+      restaurant_name: restaurant.name,
+    });
+    return;
+  }
+
+  // 3. Fetch active categories for this restaurant
+  const categories = db.find('categories', (c: any) => c.restaurant_id === restaurant.id && c.status === 'active') as any[];
+  categories.sort((a: any, b: any) => a.sort_order - b.sort_order);
+
+  // 4. Fetch active menu items with variants
+  const menuItems = db.find('menu_items', (i: any) => i.restaurant_id === restaurant.id) as any[];
+  menuItems.sort((a: any, b: any) => a.sort_order - b.sort_order);
+
+  const itemsWithVariants = menuItems.map((item: any) => {
+    const variants = db.find('item_variants', (v: any) => v.item_id === item.id && v.status === 'active') as any[];
+    return { ...item, variants };
+  });
+
+  res.json({
+    order_mode: 'online',
+    restaurant: {
+      id: restaurant.id,
+      name: restaurant.name,
+      slug: restaurant.slug,
+      logo: restaurant.logo,
+      cover_image: restaurant.cover_image,
+      description: restaurant.description,
+      phone: restaurant.phone,
+      whatsapp: restaurant.whatsapp,
+      email: restaurant.email,
+      address: restaurant.address,
+      city: restaurant.city,
+      is_open: restaurant.is_open,
+      accept_orders: restaurant.accept_orders,
+      enable_delivery: restaurant.enable_delivery !== false, // default true
+      delivery_fee: restaurant.delivery_fee || 0,
+      min_order_amount: restaurant.min_order_amount || 0,
+      estimated_delivery_time: restaurant.estimated_delivery_time || '30-45 mins',
+      payment_methods: restaurant.payment_methods || ['cod', 'bank_transfer', 'easypaisa', 'jazzcash'],
+      bank_details: restaurant.bank_details || '',
+      opening_time: restaurant.opening_time,
+      closing_time: restaurant.closing_time,
+      tax_rate: restaurant.tax_rate || 0,
+      service_charge_rate: restaurant.service_charge_rate || 0,
+      currency: restaurant.currency || 'PKR',
+    },
+    categories,
+    menu_items: itemsWithVariants,
+  });
+});
+
 // GET /api/customer/table/:token  (Public QR Scan Endpoint)
 router.get('/customer/table/:token', (req: Request, res: Response) => {
   const { token } = req.params;

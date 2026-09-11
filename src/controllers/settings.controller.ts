@@ -47,6 +47,18 @@ router.patch('/restaurants/:restaurantId/settings', verifyToken, requireRole('su
   if (req.body.closing_time !== undefined) updates.closing_time = req.body.closing_time;
   if (req.body.is_open !== undefined) updates.is_open = req.body.is_open === true || req.body.is_open === 'true';
   if (req.body.accept_orders !== undefined) updates.accept_orders = req.body.accept_orders === true || req.body.accept_orders === 'true';
+  if (req.body.enable_delivery !== undefined) updates.enable_delivery = req.body.enable_delivery === true || req.body.enable_delivery === 'true';
+  if (req.body.delivery_fee !== undefined) updates.delivery_fee = parseFloat(req.body.delivery_fee) || 0;
+  if (req.body.min_order_amount !== undefined) updates.min_order_amount = parseFloat(req.body.min_order_amount) || 0;
+  if (req.body.estimated_delivery_time !== undefined) updates.estimated_delivery_time = req.body.estimated_delivery_time;
+  if (req.body.bank_details !== undefined) updates.bank_details = req.body.bank_details;
+  if (req.body.payment_methods) {
+    try {
+      updates.payment_methods = typeof req.body.payment_methods === 'string' ? JSON.parse(req.body.payment_methods) : req.body.payment_methods;
+    } catch {
+      updates.payment_methods = ['cod', 'bank_transfer', 'easypaisa', 'jazzcash'];
+    }
+  }
   if (req.body.tax_rate !== undefined) updates.tax_rate = parseFloat(req.body.tax_rate) || 0;
   if (req.body.service_charge_rate !== undefined) updates.service_charge_rate = parseFloat(req.body.service_charge_rate) || 0;
   if (req.body.currency !== undefined) updates.currency = req.body.currency;
