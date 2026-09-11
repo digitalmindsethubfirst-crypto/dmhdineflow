@@ -6,13 +6,21 @@ const router = Router();
 
 // GET /api/restaurants/:restaurantId/reports
 router.get('/restaurants/:restaurantId/reports', verifyToken, requireRole('super_admin', 'restaurant_owner'), requireRestaurant, (req: AuthRequest, res: Response) => {
-  const { period = 'week' } = req.query; // 'today', 'week', 'month', 'year'
+  const { period = 'week', from_date, to_date } = req.query;
   const restaurantId = req.params.restaurantId;
 
   const now = new Date();
   let startDate = new Date();
+  let endDate: Date | null = null;
 
-  if (period === 'today') {
+  if (from_date || to_date) {
+    if (from_date) {
+      startDate = new Date(from_date as string);
+    }
+    if (to_date) {
+      endDate = new Date(`${to_date}T23:59:59.999Z`);
+    }
+  } else if (period === 'today') {
     startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   } else if (period === 'week') {
     startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
@@ -23,11 +31,16 @@ router.get('/restaurants/:restaurantId/reports', verifyToken, requireRole('super
   }
 
   const startIso = startDate.toISOString();
-  const allOrders = db.find('orders', (o: any) => o.restaurant_id === restaurantId && o.created_at >= startIso) as any[];
+  let allOrders = db.find('orders', (o: any) => o.restaurant_id === restaurantId && o.created_at >= startIso) as any[];
+
+  if (endDate) {
+    const endIso = endDate.toISOString();
+    allOrders = allOrders.filter((o: any) => o.created_at <= endIso);
+  }
 
   // 1. Summary KPIs
   const totalOrders = allOrders.length;
-  const completedOrders = allOrders.filter((o: any) => o.status === 'completed');
+  const completedOrders = allOrders.filter((o: any) => o.status === 'completed' || o.status === 'delivered');
   const cancelledOrders = allOrders.filter((o: any) => o.status === 'cancelled');
   const totalRevenue = completedOrders.reduce((sum: number, o: any) => sum + o.total, 0);
   const avgOrderValue = completedOrders.length > 0 ? Math.round(totalRevenue / completedOrders.length) : 0;

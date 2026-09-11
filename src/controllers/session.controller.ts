@@ -35,11 +35,21 @@ router.get('/customer/restaurant/:slug', (req: Request, res: Response) => {
     return;
   }
 
-  // 3. Fetch active categories for this restaurant
+  // 3. Check Super Admin Online Ordering Access Control
+  if (restaurant.enable_online_ordering === false) {
+    res.status(403).json({
+      error: 'Online ordering is currently not enabled for this restaurant. Please contact restaurant administration.',
+      status: 'online_ordering_disabled',
+      restaurant_name: restaurant.name,
+    });
+    return;
+  }
+
+  // 4. Fetch active categories for this restaurant
   const categories = db.find('categories', (c: any) => c.restaurant_id === restaurant.id && c.status === 'active') as any[];
   categories.sort((a: any, b: any) => a.sort_order - b.sort_order);
 
-  // 4. Fetch active menu items with variants
+  // 5. Fetch active menu items with variants
   const menuItems = db.find('menu_items', (i: any) => i.restaurant_id === restaurant.id) as any[];
   menuItems.sort((a: any, b: any) => a.sort_order - b.sort_order);
 
@@ -64,7 +74,9 @@ router.get('/customer/restaurant/:slug', (req: Request, res: Response) => {
       city: restaurant.city,
       is_open: restaurant.is_open,
       accept_orders: restaurant.accept_orders,
-      enable_delivery: restaurant.enable_delivery !== false, // default true
+      enable_online_ordering: restaurant.enable_online_ordering !== false,
+      enable_dine_in: restaurant.enable_dine_in !== false,
+      enable_delivery: restaurant.enable_delivery !== false,
       delivery_fee: restaurant.delivery_fee || 0,
       min_order_amount: restaurant.min_order_amount || 0,
       estimated_delivery_time: restaurant.estimated_delivery_time || '30-45 mins',
@@ -118,7 +130,17 @@ router.get('/customer/table/:token', (req: Request, res: Response) => {
     return;
   }
 
-  // 4. Check if table is active
+  // 4. Check Super Admin Dine-In Ordering Access Control
+  if (restaurant.enable_dine_in === false) {
+    res.status(403).json({
+      error: 'Dine-in table ordering is currently disabled for this restaurant.',
+      status: 'dine_in_disabled',
+      restaurant_name: restaurant.name,
+    });
+    return;
+  }
+
+  // 5. Check if table is active
   if (table.status !== 'active') {
     res.status(403).json({
       error: 'This table is currently not available for ordering.',

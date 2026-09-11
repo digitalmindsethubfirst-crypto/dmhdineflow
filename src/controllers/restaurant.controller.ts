@@ -54,13 +54,21 @@ router.get('/dashboard', verifyToken, requireRole('super_admin'), (_req: AuthReq
 // GET /api/admin/restaurants
 router.get('/restaurants', verifyToken, requireRole('super_admin'), (req: AuthRequest, res: Response) => {
   let restaurants = db.getAll('restaurants') as any[];
-  const { status, search, subscription } = req.query;
+  const { status, search, subscription, from_date, to_date } = req.query;
 
   if (status && status !== 'all') {
     restaurants = restaurants.filter((r: any) => r.status === status);
   }
   if (subscription && subscription !== 'all') {
     restaurants = restaurants.filter((r: any) => r.subscription_status === subscription);
+  }
+  if (from_date) {
+    const fromStr = `${from_date}T00:00:00.000Z`;
+    restaurants = restaurants.filter((r: any) => r.created_at >= fromStr || r.created_at >= (from_date as string));
+  }
+  if (to_date) {
+    const toStr = `${to_date}T23:59:59.999Z`;
+    restaurants = restaurants.filter((r: any) => r.created_at <= toStr);
   }
   if (search) {
     const s = (search as string).toLowerCase();
@@ -72,7 +80,12 @@ router.get('/restaurants', verifyToken, requireRole('super_admin'), (req: AuthRe
   // Attach owner info
   const result = restaurants.map((r: any) => {
     const owner = db.findOne('users', (u: any) => u.restaurant_id === r.id && u.role === 'restaurant_owner');
-    return { ...r, owner: owner ? { name: owner.name, email: owner.email, phone: owner.phone } : null };
+    return {
+      ...r,
+      enable_dine_in: r.enable_dine_in !== false,
+      enable_online_ordering: r.enable_online_ordering !== false,
+      owner: owner ? { name: owner.name, email: owner.email, phone: owner.phone } : null,
+    };
   });
 
   res.json(result);
@@ -98,6 +111,12 @@ router.post('/restaurants', verifyToken, requireRole('super_admin'), (req: AuthR
   const ownerId = uuid();
   const slug = restaurant.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 
+  const packagePlan = restaurant.package_plan || restaurant.plan || 'pro';
+  // Package-based default: Starter has dine-in only; Pro/Enterprise has both online & dine-in
+  const defaultOnlineOrdering = restaurant.enable_online_ordering !== undefined
+    ? Boolean(restaurant.enable_online_ordering)
+    : packagePlan !== 'starter';
+
   db.insert('restaurants', {
     id: restaurantId, name: restaurant.name, slug,
     logo: restaurant.logo || '', cover_image: restaurant.cover_image || '',
@@ -107,6 +126,14 @@ router.post('/restaurants', verifyToken, requireRole('super_admin'), (req: AuthR
     opening_time: restaurant.opening_time || '09:00',
     closing_time: restaurant.closing_time || '23:00',
     status: 'active', is_open: true, accept_orders: true,
+    // Super Admin Access Controls
+    enable_dine_in: restaurant.enable_dine_in !== undefined ? Boolean(restaurant.enable_dine_in) : true,
+    enable_online_ordering: defaultOnlineOrdering,
+    package_plan: packagePlan,
+    enable_delivery: defaultOnlineOrdering,
+    delivery_fee: restaurant.delivery_fee || 150,
+    min_order_amount: restaurant.min_order_amount || 500,
+    estimated_delivery_time: restaurant.estimated_delivery_time || '25-35 mins',
     tax_rate: restaurant.tax_rate || 0, service_charge_rate: restaurant.service_charge_rate || 0,
     currency: restaurant.currency || 'PKR',
     subscription_status: restaurant.subscription_status || 'active',
@@ -122,7 +149,7 @@ router.post('/restaurants', verifyToken, requireRole('super_admin'), (req: AuthR
   });
 
   db.insert('subscriptions', {
-    id: uuid(), restaurant_id: restaurantId, plan: restaurant.plan || 'Standard',
+    id: uuid(), restaurant_id: restaurantId, plan: packagePlan,
     status: restaurant.subscription_status || 'active',
     start_date: now,
     expiry_date: restaurant.subscription_expiry || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
@@ -133,7 +160,7 @@ router.post('/restaurants', verifyToken, requireRole('super_admin'), (req: AuthR
   db.insert('audit_logs', {
     id: uuid(), user_id: req.user!.id, restaurant_id: restaurantId,
     action: 'restaurant_created', entity_type: 'restaurant', entity_id: restaurantId,
-    metadata: JSON.stringify({ name: restaurant.name }), created_at: now,
+    metadata: JSON.stringify({ name: restaurant.name, package_plan: packagePlan }), created_at: now,
   });
 
   res.status(201).json({ id: restaurantId, message: 'Restaurant and owner account created successfully.' });
@@ -291,6 +318,18 @@ router.delete('/restaurants/:id', verifyToken, requireRole('super_admin'), (req:
 // GET /api/admin/audit-logs
 router.get('/audit-logs', verifyToken, requireRole('super_admin'), (req: AuthRequest, res: Response) => {
   let logs = db.getAll('audit_logs') as any[];
+
+  const { from_date, to_date } = req.query;
+  if (from_date) {
+    const from = new Date(from_date as string);
+    logs = logs.filter((l: any) => new Date(l.created_at) >= from);
+  }
+  if (to_date) {
+    const to = new Date(to_date as string);
+    to.setHours(23, 59, 59, 999);
+    logs = logs.filter((l: any) => new Date(l.created_at) <= to);
+  }
+
   logs.sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 
   const page = parseInt(req.query.page as string) || 1;

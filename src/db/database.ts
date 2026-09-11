@@ -32,6 +32,10 @@ export interface Restaurant {
   status: 'active' | 'inactive' | 'suspended';
   is_open: boolean;
   accept_orders: boolean;
+  // Super Admin Ordering Access Controls
+  enable_dine_in?: boolean; // Default true
+  enable_online_ordering?: boolean; // Default true/false based on package
+  package_plan?: string; // 'starter' | 'pro' | 'enterprise'
   enable_delivery?: boolean;
   delivery_fee?: number;
   min_order_amount?: number;
@@ -66,7 +70,8 @@ export interface MenuItem {
   name: string;
   description: string;
   image?: string;
-  base_price: number;
+  original_price?: number; // Sell / Original Price
+  base_price: number; // Discounted / Active Offer Price
   available: boolean;
   sort_order: number;
   created_at: string;
@@ -77,7 +82,8 @@ export interface ItemVariant {
   id: string;
   item_id: string;
   name: string;
-  price: number;
+  original_price?: number; // Optional original price for variant
+  price: number; // Active price
   status: 'active' | 'inactive';
 }
 

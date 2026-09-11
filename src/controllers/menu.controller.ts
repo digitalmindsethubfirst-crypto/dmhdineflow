@@ -34,7 +34,7 @@ router.get('/restaurants/:restaurantId/menu-items', verifyToken, requireRestaura
 
 // POST /api/restaurants/:restaurantId/menu-items
 router.post('/restaurants/:restaurantId/menu-items', verifyToken, requireRole('super_admin', 'restaurant_owner'), requireRestaurant, upload.single('image'), (req: AuthRequest, res: Response) => {
-  const { name, description, category_id, base_price, sort_order, variants } = req.body;
+  const { name, description, category_id, base_price, original_price, sort_order, variants } = req.body;
   if (!name || !category_id || !base_price) {
     res.status(400).json({ error: 'Name, category, and price are required.' });
     return;
@@ -53,6 +53,7 @@ router.post('/restaurants/:restaurantId/menu-items', verifyToken, requireRole('s
     id: itemId, restaurant_id: req.params.restaurantId, category_id,
     name, description: description || '',
     image: req.file ? `/uploads/${req.file.filename}` : '',
+    original_price: original_price && parseFloat(original_price) > 0 ? parseFloat(original_price) : undefined,
     base_price: parseFloat(base_price), available: true,
     sort_order: parseInt(sort_order) || 0,
     created_at: now, updated_at: now,
@@ -69,7 +70,12 @@ router.post('/restaurants/:restaurantId/menu-items', verifyToken, requireRole('s
   for (const v of parsedVariants) {
     if (v.name && v.price) {
       db.insert('item_variants', {
-        id: uuid(), item_id: itemId, name: v.name, price: parseFloat(v.price), status: 'active',
+        id: uuid(),
+        item_id: itemId,
+        name: v.name,
+        original_price: v.original_price && parseFloat(v.original_price) > 0 ? parseFloat(v.original_price) : undefined,
+        price: parseFloat(v.price),
+        status: 'active',
       });
     }
   }
@@ -103,6 +109,9 @@ router.patch('/menu-items/:id', verifyToken, requireRole('super_admin', 'restaur
   if (req.body.description !== undefined) updates.description = req.body.description;
   if (req.body.category_id) updates.category_id = req.body.category_id;
   if (req.body.base_price) updates.base_price = parseFloat(req.body.base_price);
+  if (req.body.original_price !== undefined) {
+    updates.original_price = req.body.original_price && parseFloat(req.body.original_price) > 0 ? parseFloat(req.body.original_price) : null;
+  }
   if (req.body.sort_order !== undefined) updates.sort_order = parseInt(req.body.sort_order);
   if (req.body.available !== undefined) updates.available = req.body.available === true || req.body.available === 'true';
   if (req.file) {
@@ -127,7 +136,12 @@ router.patch('/menu-items/:id', verifyToken, requireRole('super_admin', 'restaur
     for (const v of parsedVariants) {
       if (v.name && v.price) {
         db.insert('item_variants', {
-          id: uuid(), item_id: req.params.id, name: v.name, price: parseFloat(v.price), status: 'active',
+          id: uuid(),
+          item_id: req.params.id,
+          name: v.name,
+          original_price: v.original_price && parseFloat(v.original_price) > 0 ? parseFloat(v.original_price) : undefined,
+          price: parseFloat(v.price),
+          status: 'active',
         });
       }
     }

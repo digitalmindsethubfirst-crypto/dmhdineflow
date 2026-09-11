@@ -31,6 +31,10 @@ router.post('/customer/orders/online', (req: Request, res: Response) => {
     res.status(403).json({ error: 'This restaurant is currently unavailable.' });
     return;
   }
+  if (restaurant.enable_online_ordering === false) {
+    res.status(403).json({ error: 'Online ordering is disabled for this restaurant.' });
+    return;
+  }
   if (!restaurant.accept_orders || !restaurant.is_open) {
     res.status(403).json({ error: 'This restaurant is not accepting orders right now.' });
     return;
@@ -188,6 +192,7 @@ router.post('/orders', (req: Request, res: Response) => {
   const restaurant = db.findById('restaurants', restaurant_id);
   if (!restaurant) { res.status(404).json({ error: 'Restaurant not found.' }); return; }
   if (restaurant.status !== 'active') { res.status(403).json({ error: 'This restaurant is currently unavailable.' }); return; }
+  if (restaurant.enable_dine_in === false) { res.status(403).json({ error: 'Dine-in ordering is disabled for this restaurant.' }); return; }
   if (!restaurant.accept_orders || !restaurant.is_open) { res.status(403).json({ error: 'This restaurant is not accepting orders right now.' }); return; }
 
   // 2. Validate table
@@ -355,10 +360,19 @@ router.get('/restaurants/:restaurantId/orders', verifyToken, requireRole('super_
   let orders = db.find('orders', (o: any) => o.restaurant_id === req.params.restaurantId) as any[];
 
   // Filter parameters
-  const { date_filter, status, order_type, search, start_date, end_date } = req.query;
+  const { date_filter, from_date, to_date, status, order_type, search, start_date, end_date } = req.query;
   const now = new Date();
 
-  if (date_filter === 'today' || (!date_filter && !start_date)) {
+  if (from_date || to_date) {
+    if (from_date) {
+      const fromStr = `${from_date}T00:00:00.000Z`;
+      orders = orders.filter((o: any) => o.created_at >= fromStr || o.created_at >= (from_date as string));
+    }
+    if (to_date) {
+      const toStr = `${to_date}T23:59:59.999Z`;
+      orders = orders.filter((o: any) => o.created_at <= toStr);
+    }
+  } else if (date_filter === 'today' || (!date_filter && !start_date)) {
     const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
     orders = orders.filter((o: any) => o.created_at >= todayStart);
   } else if (date_filter === 'yesterday') {

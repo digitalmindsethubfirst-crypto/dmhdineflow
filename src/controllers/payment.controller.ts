@@ -81,7 +81,21 @@ router.get(
   requireRole('super_admin', 'restaurant_owner'),
   requireRestaurant,
   (req: AuthRequest, res: Response) => {
-    const list = db.find('payments', (p: any) => p.restaurant_id === req.params.restaurantId) as any[];
+    let list = db.find('payments', (p: any) => p.restaurant_id === req.params.restaurantId) as any[];
+    const { from_date, to_date, status } = req.query;
+
+    if (from_date) {
+      const fromStr = `${from_date}T00:00:00.000Z`;
+      list = list.filter((p: any) => p.submitted_at >= fromStr || p.submitted_at >= (from_date as string));
+    }
+    if (to_date) {
+      const toStr = `${to_date}T23:59:59.999Z`;
+      list = list.filter((p: any) => p.submitted_at <= toStr);
+    }
+    if (status && status !== 'all') {
+      list = list.filter((p: any) => p.status === status);
+    }
+
     list.sort((a, b) => new Date(b.submitted_at).getTime() - new Date(a.submitted_at).getTime());
     res.json(list);
   }
@@ -92,8 +106,22 @@ router.get(
   '/admin/payments',
   verifyToken,
   requireRole('super_admin'),
-  (_req: AuthRequest, res: Response) => {
-    const list = db.getAll('payments') as any[];
+  (req: AuthRequest, res: Response) => {
+    let list = db.getAll('payments') as any[];
+    const { from_date, to_date, status } = req.query;
+
+    if (from_date) {
+      const fromStr = `${from_date}T00:00:00.000Z`;
+      list = list.filter((p: any) => p.submitted_at >= fromStr || p.submitted_at >= (from_date as string));
+    }
+    if (to_date) {
+      const toStr = `${to_date}T23:59:59.999Z`;
+      list = list.filter((p: any) => p.submitted_at <= toStr);
+    }
+    if (status && status !== 'all') {
+      list = list.filter((p: any) => p.status === status);
+    }
+
     list.sort((a, b) => new Date(b.submitted_at).getTime() - new Date(a.submitted_at).getTime());
 
     const enriched = list.map((p) => {
