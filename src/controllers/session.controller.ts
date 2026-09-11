@@ -10,19 +10,22 @@ router.get('/customer/restaurant/:slug', (req: Request, res: Response) => {
   const { slug } = req.params;
   const cleanSlug = decodeURIComponent(slug || '').trim().toLowerCase();
 
-  // 1. Find restaurant by slug, id, or normalized name
-  const restaurant = db.findOne('restaurants', (r: any) => {
+  // 1. Find all matching restaurants by slug, id, or normalized name
+  const matches = db.find('restaurants', (r: any) => {
     if (!r) return false;
     const rSlug = (r.slug || '').toLowerCase();
     const rId = (r.id || '').toLowerCase();
     const rNameSlug = (r.name || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
     return rSlug === cleanSlug || rId === cleanSlug || rNameSlug === cleanSlug;
-  });
+  }) as any[];
 
-  if (!restaurant) {
+  if (!matches || matches.length === 0) {
     res.status(404).json({ error: `Restaurant "${slug}" not found. Please check your link or contact the restaurant.`, status: 'not_found' });
     return;
   }
+
+  // Prioritize active restaurant first
+  const restaurant = matches.find((r: any) => r.status === 'active') || matches[0];
 
   // 2. Check restaurant status
   if (restaurant.status === 'suspended') {
