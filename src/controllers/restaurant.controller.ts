@@ -9,45 +9,45 @@ import { config } from '../config/env';
 
 const router = Router();
 
-// GET /api/admin/dashboard
+// GET /api/admin/dashboard (Platform SaaS Metrics - Zero Restaurant Revenue Exposure for Privacy)
 router.get('/dashboard', verifyToken, requireRole('super_admin'), (_req: AuthRequest, res: Response) => {
   const now = new Date();
-  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
 
   const totalRestaurants = db.count('restaurants');
   const activeRestaurants = db.count('restaurants', (r: any) => r.status === 'active');
   const suspendedRestaurants = db.count('restaurants', (r: any) => r.status === 'suspended');
-  const totalOrders = db.count('orders');
-  const todayOrders = db.count('orders', (o: any) => o.created_at >= todayStart);
-
-  const todayCompletedOrders = db.find('orders', (o: any) => o.created_at >= todayStart && o.status === 'completed') as any[];
-  const todayRevenue = todayCompletedOrders.reduce((sum: number, o: any) => sum + o.total, 0);
 
   const activeSubscriptions = db.count('subscriptions', (s: any) => s.status === 'active');
   const expiredSubscriptions = db.count('subscriptions', (s: any) => s.status === 'expired');
   const pendingPayments = db.count('subscriptions', (s: any) => s.payment_status === 'pending' || s.payment_status === 'overdue');
 
-  // Orders by day for last 7 days
-  const ordersOverTime: { date: string; count: number; revenue: number }[] = [];
+  // Platform SaaS Subscription Fees collected from restaurant software licenses
+  const allPaidSubscriptions = db.find('subscriptions', (s: any) => s.payment_status === 'paid') as any[];
+  const monthlySaaSBilling = allPaidSubscriptions.reduce((sum: number, s: any) => sum + (s.amount || 0), 0);
+
+  // Tenant registrations growth over time (last 7 days)
+  const tenantsOverTime: { date: string; count: number }[] = [];
   for (let i = 6; i >= 0; i--) {
     const d = new Date(now);
     d.setDate(d.getDate() - i);
     const dayStart = new Date(d.getFullYear(), d.getMonth(), d.getDate()).toISOString();
     const dayEnd = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1).toISOString();
-    const dayOrders = db.find('orders', (o: any) => o.created_at >= dayStart && o.created_at < dayEnd) as any[];
-    const dayRevenue = dayOrders.filter((o: any) => o.status === 'completed').reduce((s: number, o: any) => s + o.total, 0);
-    ordersOverTime.push({
+    const dayTenants = db.find('restaurants', (r: any) => r.created_at >= dayStart && r.created_at < dayEnd) as any[];
+    tenantsOverTime.push({
       date: d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-      count: dayOrders.length,
-      revenue: dayRevenue,
+      count: dayTenants.length,
     });
   }
 
   res.json({
-    totalRestaurants, activeRestaurants, suspendedRestaurants,
-    totalOrders, todayOrders, todayRevenue,
-    activeSubscriptions, expiredSubscriptions, pendingPayments,
-    ordersOverTime,
+    totalRestaurants,
+    activeRestaurants,
+    suspendedRestaurants,
+    activeSubscriptions,
+    expiredSubscriptions,
+    pendingPayments,
+    monthlySaaSBilling,
+    tenantsOverTime,
   });
 });
 
@@ -166,7 +166,7 @@ router.post('/restaurants', verifyToken, requireRole('super_admin'), (req: AuthR
   res.status(201).json({ id: restaurantId, message: 'Restaurant and owner account created successfully.' });
 });
 
-// GET /api/admin/restaurants/:id
+// GET /api/admin/restaurants/:id (Privacy-Protected: No Customer Sales/Revenue Data)
 router.get('/restaurants/:id', verifyToken, requireRole('super_admin'), (req: AuthRequest, res: Response) => {
   const restaurant = db.findById('restaurants', req.params.id);
   if (!restaurant) {
@@ -175,9 +175,6 @@ router.get('/restaurants/:id', verifyToken, requireRole('super_admin'), (req: Au
   }
   const owner = db.findOne('users', (u: any) => u.restaurant_id === restaurant.id && u.role === 'restaurant_owner');
   const subscription = db.findOne('subscriptions', (s: any) => s.restaurant_id === restaurant.id);
-  const totalOrders = db.count('orders', (o: any) => o.restaurant_id === restaurant.id);
-  const completedOrders = db.find('orders', (o: any) => o.restaurant_id === restaurant.id && o.status === 'completed') as any[];
-  const totalRevenue = completedOrders.reduce((s: number, o: any) => s + o.total, 0);
   const totalTables = db.count('tables', (t: any) => t.restaurant_id === restaurant.id);
   const totalItems = db.count('menu_items', (i: any) => i.restaurant_id === restaurant.id);
 
@@ -185,7 +182,7 @@ router.get('/restaurants/:id', verifyToken, requireRole('super_admin'), (req: Au
     ...restaurant,
     owner: owner ? { id: owner.id, name: owner.name, email: owner.email, phone: owner.phone } : null,
     subscription,
-    stats: { totalOrders, totalRevenue, totalTables, totalItems },
+    stats: { totalTables, totalItems },
   });
 });
 
@@ -199,6 +196,7 @@ router.patch('/restaurants/:id', verifyToken, requireRole('super_admin'), (req: 
 
   const updates = req.body;
   const updated = db.update('restaurants', req.params.id, updates);
+  db.forceSave();
 
   db.insert('audit_logs', {
     id: uuid(), user_id: req.user!.id, restaurant_id: req.params.id,
@@ -224,6 +222,7 @@ router.patch('/restaurants/:id/status', verifyToken, requireRole('super_admin'),
   }
 
   db.update('restaurants', req.params.id, { status });
+  db.forceSave();
 
   db.insert('audit_logs', {
     id: uuid(), user_id: req.user!.id, restaurant_id: req.params.id,

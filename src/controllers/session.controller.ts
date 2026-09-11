@@ -8,11 +8,19 @@ const router = Router();
 // GET /api/customer/restaurant/:slug  (Public Online Ordering Endpoint - Remote/No QR)
 router.get('/customer/restaurant/:slug', (req: Request, res: Response) => {
   const { slug } = req.params;
+  const cleanSlug = decodeURIComponent(slug || '').trim().toLowerCase();
 
-  // 1. Find restaurant by slug (case-insensitive)
-  const restaurant = db.findOne('restaurants', (r: any) => r.slug?.toLowerCase() === slug?.toLowerCase());
+  // 1. Find restaurant by slug, id, or normalized name
+  const restaurant = db.findOne('restaurants', (r: any) => {
+    if (!r) return false;
+    const rSlug = (r.slug || '').toLowerCase();
+    const rId = (r.id || '').toLowerCase();
+    const rNameSlug = (r.name || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    return rSlug === cleanSlug || rId === cleanSlug || rNameSlug === cleanSlug;
+  });
+
   if (!restaurant) {
-    res.status(404).json({ error: 'Restaurant not found.', status: 'not_found' });
+    res.status(404).json({ error: `Restaurant "${slug}" not found. Please check your link or contact the restaurant.`, status: 'not_found' });
     return;
   }
 
@@ -35,10 +43,10 @@ router.get('/customer/restaurant/:slug', (req: Request, res: Response) => {
     return;
   }
 
-  // 3. Check Super Admin Online Ordering Access Control
+  // 3. Check Super Admin Online Ordering Access Control (Default to true if not explicitly false)
   if (restaurant.enable_online_ordering === false) {
     res.status(403).json({
-      error: 'Online ordering is currently not enabled for this restaurant. Please contact restaurant administration.',
+      error: 'Online ordering is currently turned off for this restaurant. Please contact restaurant administration.',
       status: 'online_ordering_disabled',
       restaurant_name: restaurant.name,
     });
