@@ -484,19 +484,10 @@ router.patch('/orders/:id/status', verifyToken, requireRole('super_admin', 'rest
   }
 
   const { status } = req.body;
-  const validTransitions: Record<string, string[]> = {
-    new: ['accepted', 'cancelled'],
-    accepted: ['cooking', 'cancelled'],
-    cooking: ['ready', 'out_for_delivery', 'cancelled'],
-    ready: ['out_for_delivery', 'completed', 'delivered'],
-    out_for_delivery: ['delivered', 'completed'],
-    completed: [],
-    delivered: [],
-    cancelled: [],
-  };
-
-  if (!validTransitions[order.status]?.includes(status)) {
-    res.status(400).json({ error: `Cannot change status from ${order.status} to ${status}.` }); return;
+  const allowedStatuses = ['new', 'accepted', 'cooking', 'ready', 'out_for_delivery', 'completed', 'delivered', 'cancelled'];
+  if (!status || !allowedStatuses.includes(status)) {
+    res.status(400).json({ error: `Invalid status: "${status}". Allowed: ${allowedStatuses.join(', ')}` });
+    return;
   }
 
   const updated = db.update('orders', req.params.id, { status, updated_at: new Date().toISOString() });
@@ -517,6 +508,8 @@ router.patch('/orders/:id/status', verifyToken, requireRole('super_admin', 'rest
     created_at: new Date().toISOString(),
   });
 
+  db.forceSave();
+
   // Socket emit
   const io = (global as any).__io;
   if (io) {
@@ -527,6 +520,7 @@ router.patch('/orders/:id/status', verifyToken, requireRole('super_admin', 'rest
     }
   }
 
+  res.json(fullOrder);
 });
 
 // PATCH /api/orders/:id/payment (Owner records actual payment received and approves order)
