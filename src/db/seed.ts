@@ -255,15 +255,89 @@ async function seed() {
     });
   }
 
+  // ── Restaurant 3: Burgerizza ──
+  const r3Id = 'e803fea9-e988-402f-94e0-fa8bce615a26';
+  const r3OwnerId = uuid();
+
+  db.insert('restaurants', {
+    id: r3Id, name: 'Burgerizza', slug: 'burgerizza',
+    description: 'Where burger meets Pizza - Serving signature burgers, crispy broast and handcrafted pizzas.',
+    phone: '03455555590', whatsapp: '03455555590', email: 'burgerizza1@gmail.com',
+    address: 'Unit No 06 Near Jazz Point Latifabad', city: 'Hyderabad',
+    opening_time: '18:00', closing_time: '05:00',
+    status: 'active', is_open: true, accept_orders: true,
+    enable_online_ordering: true, enable_dine_in: true, enable_delivery: true,
+    delivery_fee: 100, min_order_amount: 500, estimated_delivery_time: '30-45 mins',
+    tax_rate: 5, service_charge_rate: 0, currency: 'PKR',
+    subscription_status: 'active', subscription_expiry: expiry,
+    created_at: now, updated_at: now,
+  });
+
+  db.insert('users', {
+    id: r3OwnerId, name: 'Nasir', email: 'burgerizza1@gmail.com',
+    phone: '03455555590', password_hash: hash('owner123'),
+    role: 'restaurant_owner', status: 'active', restaurant_id: r3Id,
+    created_at: now, updated_at: now,
+  });
+
+  db.insert('subscriptions', {
+    id: uuid(), restaurant_id: r3Id, plan: 'Pro', status: 'active',
+    start_date: now, expiry_date: expiry, amount: 5000,
+    payment_status: 'paid', created_at: now,
+  });
+
+  const r3Cats = [
+    { id: uuid(), name: 'Burgers & Sandwiches', desc: 'Signature Burgers & Sandwiches', order: 1 },
+    { id: uuid(), name: 'Crispy Broast', desc: 'Golden Crispy Fried Broast', order: 2 },
+    { id: uuid(), name: 'Handcrafted Pizzas', desc: 'Cheesy Hot Crust Pizzas', order: 3 },
+  ];
+
+  for (const c of r3Cats) {
+    db.insert('categories', {
+      id: c.id, restaurant_id: r3Id, name: c.name, description: c.desc,
+      sort_order: c.order, status: 'active', created_at: now, updated_at: now,
+    });
+  }
+
+  const r3Items = [
+    { catIdx: 0, name: 'Steak Burger', desc: 'Juicy tender steak patty with signature sauces', price: 500, origPrice: 600 },
+    { catIdx: 0, name: 'Crunch Burger', desc: 'Extra crispy chicken fillet with fresh lettuce', price: 399, origPrice: 500 },
+    { catIdx: 0, name: 'Mexican Sandwich', desc: 'Spicy Mexican grilled chicken loaded in toasted bread', price: 499, origPrice: 599 },
+    { catIdx: 0, name: 'Club Sandwiches', desc: 'Classic triple layer sandwich with chicken, egg and cheese', price: 450, origPrice: 550 },
+    { catIdx: 0, name: 'BBQ Club Sandwiches', desc: 'Smokey BBQ shredded chicken club sandwich', price: 399, origPrice: 500 },
+    { catIdx: 1, name: 'Plain Broast', desc: 'Quarter crispy golden fried broast served with fries and dip', price: 450, origPrice: 550 },
+    { catIdx: 1, name: 'Injected Broast', desc: 'Special sauce injected deep into the chicken for ultimate flavor', price: 599, origPrice: 700 },
+    { catIdx: 1, name: 'Spicy Masala Broast', desc: 'Tossed in hot peri-peri style spicy masala', price: 450, origPrice: 550 },
+    { catIdx: 2, name: 'Pizza Tikka', desc: 'Topped with spicy chicken tikka chunks, onions, and melted mozzarella', price: 500, origPrice: 650 },
+  ];
+
+  for (let i = 0; i < r3Items.length; i++) {
+    const item = r3Items[i];
+    const itemId = uuid();
+    db.insert('menu_items', {
+      id: itemId, restaurant_id: r3Id, category_id: r3Cats[item.catIdx].id,
+      name: item.name, description: item.desc, base_price: item.price, original_price: item.origPrice,
+      available: true, sort_order: i + 1, created_at: now, updated_at: now,
+    });
+  }
+
+  for (let t = 1; t <= 5; t++) {
+    db.insert('tables', {
+      id: uuid(), restaurant_id: r3Id, table_number: t, qr_token: uuid(),
+      status: 'active', created_at: now, updated_at: now,
+    });
+  }
+
   // Audit logs
   db.insert('audit_logs', { id: uuid(), user_id: adminId, action: 'restaurant_created', entity_type: 'restaurant', entity_id: r1Id, metadata: JSON.stringify({ name: 'Royal Karahi' }), created_at: now });
   db.insert('audit_logs', { id: uuid(), user_id: adminId, action: 'restaurant_created', entity_type: 'restaurant', entity_id: r2Id, metadata: JSON.stringify({ name: 'Artisan Pizza & Pasta' }), created_at: now });
+  db.insert('audit_logs', { id: uuid(), user_id: adminId, action: 'restaurant_created', entity_type: 'restaurant', entity_id: r3Id, metadata: JSON.stringify({ name: 'Burgerizza' }), created_at: now });
 
   db.forceSave();
   console.log('✅ Database seeded successfully!');
   console.log('   Super Admin: admin@dineflow.com / admin123');
   console.log('   Royal Karahi Owner: owner@royalkarahi.com / owner123');
-  console.log('   Royal Karahi Kitchen: kitchen@royalkarahi.com / kitchen123');
+  console.log('   Burgerizza Owner: burgerizza1@gmail.com / owner123');
   console.log('   Artisan Pizza Owner: owner@artisan.com / owner123');
 }
 
