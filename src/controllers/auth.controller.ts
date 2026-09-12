@@ -15,7 +15,8 @@ router.post('/login', (req: Request, res: Response) => {
     return;
   }
 
-  const user = db.findOne('users', (u: any) => u.email === email);
+  const cleanEmail = (email || '').trim().toLowerCase();
+  const user = db.findOne('users', (u: any) => (u.email || '').toLowerCase() === cleanEmail);
   if (!user) {
     res.status(401).json({ error: 'Invalid email or password.' });
     return;
