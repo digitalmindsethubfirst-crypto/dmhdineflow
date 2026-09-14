@@ -583,6 +583,7 @@ router.patch('/orders/:id/payment', verifyToken, requireRole('super_admin', 'res
   db.forceSave();
 
   // Socket emit
+  const io = (global as any).__io;
   if (io) {
     io.to(`restaurant_${order.restaurant_id}`).emit('order:status_updated', fullOrder);
     io.to(`restaurant_${order.restaurant_id}`).emit('order:updated', fullOrder);

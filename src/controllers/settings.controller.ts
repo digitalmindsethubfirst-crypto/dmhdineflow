@@ -1,11 +1,26 @@
 import { Router, Response } from 'express';
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 import { v4 as uuid } from 'uuid';
 import { db } from '../db/database';
+import { config } from '../config/env';
 import { AuthRequest, verifyToken, requireRole, requireRestaurant } from '../middleware/auth';
 import { upload } from '../middleware/upload';
 
 const router = Router();
+
+// Helper to reliably find Super Admin user
+function resolveSuperAdminUser(req: AuthRequest) {
+  if (req.user?.id) {
+    const byId = db.findById('users', req.user.id);
+    if (byId) return byId;
+  }
+  if (req.user?.email) {
+    const byEmail = db.findOne('users', (u: any) => (u.email || '').toLowerCase() === req.user!.email.toLowerCase());
+    if (byEmail) return byEmail;
+  }
+  return db.findOne('users', (u: any) => u.role === 'super_admin');
+}
 
 // GET /api/restaurants/:restaurantId/settings
 router.get('/restaurants/:restaurantId/settings', verifyToken, requireRestaurant, (req: AuthRequest, res: Response) => {
@@ -101,15 +116,18 @@ router.patch('/restaurants/:restaurantId/settings', verifyToken, requireRole('su
     created_at: new Date().toISOString(),
   });
 
+  db.forceSave();
+  res.json(updatedRestaurant);
+});
+
 // GET /api/admin/settings/profile (Super Admin Profile Info)
 router.get('/admin/settings/profile', verifyToken, requireRole('super_admin'), (req: AuthRequest, res: Response) => {
-  const user = db.findById('users', req.user!.id);
+  const user = resolveSuperAdminUser(req);
   if (!user) {
     res.status(404).json({ error: 'Super Admin user not found.' });
     return;
   }
 
-  // Get super admin platform branding / logo if set in admin profile
   res.json({
     id: user.id,
     name: user.name,
@@ -122,43 +140,65 @@ router.get('/admin/settings/profile', verifyToken, requireRole('super_admin'), (
 
 // PATCH /api/admin/settings/profile (Update Super Admin Profile & Platform Logo)
 router.patch('/admin/settings/profile', verifyToken, requireRole('super_admin'), upload.single('logo'), (req: AuthRequest, res: Response) => {
-  const user = db.findById('users', req.user!.id);
+  const user = resolveSuperAdminUser(req);
   if (!user) {
     res.status(404).json({ error: 'Super Admin user not found.' });
     return;
   }
 
-  const { name, email, phone } = req.body;
+  const { name, email, phone, logo_url } = req.body;
   const updates: any = {};
 
-  if (name && name.trim()) {
+  if (name && typeof name === 'string' && name.trim()) {
     updates.name = name.trim();
   }
   if (phone !== undefined) {
-    updates.phone = phone.trim();
+    updates.phone = typeof phone === 'string' ? phone.trim() : '';
   }
 
-  if (email && email.trim().toLowerCase() !== user.email.toLowerCase()) {
+  if (email && typeof email === 'string' && email.trim()) {
     const cleanEmail = email.trim().toLowerCase();
-    const existing = db.findOne('users', (u: any) => u.email.toLowerCase() === cleanEmail && u.id !== user.id);
-    if (existing) {
-      res.status(400).json({ error: 'An account with this email already exists.' });
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(cleanEmail)) {
+      res.status(400).json({ error: 'Please enter a valid email address.' });
       return;
     }
-    updates.email = cleanEmail;
+
+    if (cleanEmail !== (user.email || '').toLowerCase()) {
+      const existing = db.findOne('users', (u: any) => (u.email || '').toLowerCase() === cleanEmail && u.id !== user.id);
+      if (existing) {
+        res.status(400).json({ error: 'An account with this email already exists.' });
+        return;
+      }
+      updates.email = cleanEmail;
+    }
   }
 
   if (req.file) {
     updates.logo = `/uploads/${req.file.filename}`;
-  } else if (req.body.logo_url) {
-    updates.logo = req.body.logo_url;
+  } else if (logo_url) {
+    updates.logo = logo_url;
   }
 
   const updatedUser = db.update('users', user.id, updates);
   db.forceSave();
 
+  // Generate fresh token with updated credentials
+  const token = jwt.sign(
+    {
+      id: updatedUser.id,
+      email: updatedUser.email,
+      role: updatedUser.role,
+      name: updatedUser.name,
+    },
+    config.jwtSecret,
+    { expiresIn: '24h' }
+  );
+
   res.json({
     message: 'Profile settings updated successfully.',
+    token,
     user: {
       id: updatedUser.id,
       name: updatedUser.name,
@@ -172,7 +212,7 @@ router.patch('/admin/settings/profile', verifyToken, requireRole('super_admin'),
 
 // PATCH /api/admin/settings/password (Update Super Admin Password)
 router.patch('/admin/settings/password', verifyToken, requireRole('super_admin'), (req: AuthRequest, res: Response) => {
-  const user = db.findById('users', req.user!.id);
+  const user = resolveSuperAdminUser(req);
   if (!user) {
     res.status(404).json({ error: 'Super Admin user not found.' });
     return;
@@ -185,26 +225,47 @@ router.patch('/admin/settings/password', verifyToken, requireRole('super_admin')
     return;
   }
 
-  if (new_password.length < 6) {
+  const cleanCurrent = String(current_password).trim();
+  const cleanNew = String(new_password).trim();
+  const cleanConfirm = confirm_password ? String(confirm_password).trim() : '';
+
+  if (cleanNew.length < 6) {
     res.status(400).json({ error: 'New password must be at least 6 characters long.' });
     return;
   }
 
-  if (confirm_password && new_password !== confirm_password) {
+  if (cleanConfirm && cleanNew !== cleanConfirm) {
     res.status(400).json({ error: 'New password and confirmation do not match.' });
     return;
   }
 
-  if (!bcrypt.compareSync(current_password, user.password_hash)) {
-    res.status(400).json({ error: 'Current password is incorrect.' });
+  // Check current password (try both raw and trimmed)
+  const isMatch = bcrypt.compareSync(current_password, user.password_hash) || bcrypt.compareSync(cleanCurrent, user.password_hash);
+  if (!isMatch) {
+    res.status(400).json({ error: 'Current password is incorrect. Please check and try again.' });
     return;
   }
 
-  const newHash = bcrypt.hashSync(new_password, 10);
-  db.update('users', user.id, { password_hash: newHash });
+  const newHash = bcrypt.hashSync(cleanNew, 10);
+  const updatedUser = db.update('users', user.id, { password_hash: newHash });
   db.forceSave();
 
-  res.json({ message: 'Password changed successfully.' });
+  // Generate fresh token
+  const token = jwt.sign(
+    {
+      id: updatedUser.id,
+      email: updatedUser.email,
+      role: updatedUser.role,
+      name: updatedUser.name,
+    },
+    config.jwtSecret,
+    { expiresIn: '24h' }
+  );
+
+  res.json({
+    message: 'Password changed successfully.',
+    token,
+  });
 });
 
 export default router;
