@@ -1,10 +1,12 @@
 import { Router, Response } from 'express';
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 import path from 'path';
 import fs from 'fs';
 import { v4 as uuid } from 'uuid';
 import { db } from '../db/database';
 import { AuthRequest, verifyToken, requireRole } from '../middleware/auth';
+import { upload } from '../middleware/upload';
 import { config } from '../config/env';
 import { checkAndUpdateSubscription, renewMonthlySubscription } from '../services/subscription.service';
 
@@ -414,5 +416,167 @@ router.patch('/subscriptions/:id', verifyToken, requireRole('super_admin'), (req
 
   res.json(updated);
 });
+
+// Helper to resolve Super Admin
+function resolveAdminUser(req: AuthRequest) {
+  if (req.user?.id) {
+    const byId = db.findById('users', req.user.id);
+    if (byId) return byId;
+  }
+  if (req.user?.email) {
+    const byEmail = db.findOne('users', (u: any) => (u.email || '').toLowerCase() === req.user!.email.toLowerCase());
+    if (byEmail) return byEmail;
+  }
+  return db.findOne('users', (u: any) => u.role === 'super_admin');
+}
+
+// GET /api/admin/settings/profile
+const getAdminProfileHandler = (req: AuthRequest, res: Response) => {
+  const user = resolveAdminUser(req);
+  if (!user) {
+    res.status(404).json({ error: 'Super Admin user not found.' });
+    return;
+  }
+
+  res.json({
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    phone: user.phone || '',
+    role: user.role,
+    logo: (user as any).logo || '/dmh-logo.png',
+  });
+};
+
+// PATCH /api/admin/settings/profile
+const patchAdminProfileHandler = (req: AuthRequest, res: Response) => {
+  const user = resolveAdminUser(req);
+  if (!user) {
+    res.status(404).json({ error: 'Super Admin user not found.' });
+    return;
+  }
+
+  const { name, email, phone, logo_url } = req.body;
+  const updates: any = {};
+
+  if (name && typeof name === 'string' && name.trim()) {
+    updates.name = name.trim();
+  }
+  if (phone !== undefined) {
+    updates.phone = typeof phone === 'string' ? phone.trim() : '';
+  }
+
+  if (email && typeof email === 'string' && email.trim()) {
+    const cleanEmail = email.trim().toLowerCase();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(cleanEmail)) {
+      res.status(400).json({ error: 'Please enter a valid email address.' });
+      return;
+    }
+
+    if (cleanEmail !== (user.email || '').toLowerCase()) {
+      const existing = db.findOne('users', (u: any) => (u.email || '').toLowerCase() === cleanEmail && u.id !== user.id);
+      if (existing) {
+        res.status(400).json({ error: 'An account with this email already exists.' });
+        return;
+      }
+      updates.email = cleanEmail;
+    }
+  }
+
+  if (req.file) {
+    updates.logo = `/uploads/${req.file.filename}`;
+  } else if (logo_url) {
+    updates.logo = logo_url;
+  }
+
+  const updatedUser = db.update('users', user.id, updates);
+  db.forceSave();
+
+  const token = jwt.sign(
+    {
+      id: updatedUser.id,
+      email: updatedUser.email,
+      role: updatedUser.role,
+      name: updatedUser.name,
+    },
+    config.jwtSecret,
+    { expiresIn: '24h' }
+  );
+
+  res.json({
+    message: 'Profile settings updated successfully.',
+    token,
+    user: {
+      id: updatedUser.id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      phone: updatedUser.phone,
+      role: updatedUser.role,
+      logo: updatedUser.logo || '/dmh-logo.png',
+    },
+  });
+};
+
+// PATCH /api/admin/settings/password
+const patchAdminPasswordHandler = (req: AuthRequest, res: Response) => {
+  const user = resolveAdminUser(req);
+  if (!user) {
+    res.status(404).json({ error: 'Super Admin user not found.' });
+    return;
+  }
+
+  const { current_password, new_password, confirm_password } = req.body;
+
+  if (!current_password || !new_password) {
+    res.status(400).json({ error: 'Current password and new password are required.' });
+    return;
+  }
+
+  const cleanCurrent = String(current_password).trim();
+  const cleanNew = String(new_password).trim();
+  const cleanConfirm = confirm_password ? String(confirm_password).trim() : '';
+
+  if (cleanNew.length < 6) {
+    res.status(400).json({ error: 'New password must be at least 6 characters long.' });
+    return;
+  }
+
+  if (cleanConfirm && cleanNew !== cleanConfirm) {
+    res.status(400).json({ error: 'New password and confirmation do not match.' });
+    return;
+  }
+
+  const isMatch = bcrypt.compareSync(current_password, user.password_hash) || bcrypt.compareSync(cleanCurrent, user.password_hash);
+  if (!isMatch) {
+    res.status(400).json({ error: 'Current password is incorrect. Please check and try again.' });
+    return;
+  }
+
+  const newHash = bcrypt.hashSync(cleanNew, 10);
+  const updatedUser = db.update('users', user.id, { password_hash: newHash });
+  db.forceSave();
+
+  const token = jwt.sign(
+    {
+      id: updatedUser.id,
+      email: updatedUser.email,
+      role: updatedUser.role,
+      name: updatedUser.name,
+    },
+    config.jwtSecret,
+    { expiresIn: '24h' }
+  );
+
+  res.json({
+    message: 'Password changed successfully.',
+    token,
+  });
+};
+
+// Map routes under /admin (e.g. /api/admin/settings/profile, /api/admin/settings/password)
+router.get('/settings/profile', verifyToken, requireRole('super_admin'), getAdminProfileHandler);
+router.patch('/settings/profile', verifyToken, requireRole('super_admin'), upload.single('logo'), patchAdminProfileHandler);
+router.patch('/settings/password', verifyToken, requireRole('super_admin'), patchAdminPasswordHandler);
 
 export default router;
