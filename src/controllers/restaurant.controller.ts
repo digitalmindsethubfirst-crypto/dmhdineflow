@@ -6,11 +6,23 @@ import fs from 'fs';
 import { v4 as uuid } from 'uuid';
 import { db } from '../db/database';
 import { AuthRequest, verifyToken, requireRole } from '../middleware/auth';
-import { upload } from '../middleware/upload';
 import { config } from '../config/env';
 import { checkAndUpdateSubscription, renewMonthlySubscription } from '../services/subscription.service';
 
 const router = Router();
+
+// Helper to reliably find Super Admin user
+function resolveSuperAdminUser(req: AuthRequest) {
+  if (req.user?.id) {
+    const byId = db.findById('users', req.user.id);
+    if (byId) return byId;
+  }
+  if (req.user?.email) {
+    const byEmail = db.findOne('users', (u: any) => (u.email || '').toLowerCase() === req.user!.email.toLowerCase());
+    if (byEmail) return byEmail;
+  }
+  return db.findOne('users', (u: any) => u.role === 'super_admin');
+}
 
 // GET /api/admin/dashboard (Platform SaaS Metrics - Zero Restaurant Revenue Exposure for Privacy)
 router.get('/dashboard', verifyToken, requireRole('super_admin'), (_req: AuthRequest, res: Response) => {
@@ -417,22 +429,9 @@ router.patch('/subscriptions/:id', verifyToken, requireRole('super_admin'), (req
   res.json(updated);
 });
 
-// Helper to resolve Super Admin
-function resolveAdminUser(req: AuthRequest) {
-  if (req.user?.id) {
-    const byId = db.findById('users', req.user.id);
-    if (byId) return byId;
-  }
-  if (req.user?.email) {
-    const byEmail = db.findOne('users', (u: any) => (u.email || '').toLowerCase() === req.user!.email.toLowerCase());
-    if (byEmail) return byEmail;
-  }
-  return db.findOne('users', (u: any) => u.role === 'super_admin');
-}
-
-// GET /api/admin/settings/profile
-const getAdminProfileHandler = (req: AuthRequest, res: Response) => {
-  const user = resolveAdminUser(req);
+// GET /api/admin/settings/profile (Super Admin Profile Info)
+router.get('/settings/profile', verifyToken, requireRole('super_admin'), (req: AuthRequest, res: Response) => {
+  const user = resolveSuperAdminUser(req);
   if (!user) {
     res.status(404).json({ error: 'Super Admin user not found.' });
     return;
@@ -446,11 +445,11 @@ const getAdminProfileHandler = (req: AuthRequest, res: Response) => {
     role: user.role,
     logo: (user as any).logo || '/dmh-logo.png',
   });
-};
+});
 
-// PATCH /api/admin/settings/profile
-const patchAdminProfileHandler = (req: AuthRequest, res: Response) => {
-  const user = resolveAdminUser(req);
+// PATCH /api/admin/settings/profile (Update Super Admin Profile & Platform Logo)
+router.patch('/settings/profile', verifyToken, requireRole('super_admin'), (req: AuthRequest, res: Response) => {
+  const user = resolveSuperAdminUser(req);
   if (!user) {
     res.status(404).json({ error: 'Super Admin user not found.' });
     return;
@@ -484,15 +483,14 @@ const patchAdminProfileHandler = (req: AuthRequest, res: Response) => {
     }
   }
 
-  if (req.file) {
-    updates.logo = `/uploads/${req.file.filename}`;
-  } else if (logo_url) {
+  if (logo_url) {
     updates.logo = logo_url;
   }
 
   const updatedUser = db.update('users', user.id, updates);
   db.forceSave();
 
+  // Generate fresh token with updated credentials
   const token = jwt.sign(
     {
       id: updatedUser.id,
@@ -516,11 +514,11 @@ const patchAdminProfileHandler = (req: AuthRequest, res: Response) => {
       logo: updatedUser.logo || '/dmh-logo.png',
     },
   });
-};
+});
 
-// PATCH /api/admin/settings/password
-const patchAdminPasswordHandler = (req: AuthRequest, res: Response) => {
-  const user = resolveAdminUser(req);
+// PATCH /api/admin/settings/password (Update Super Admin Password)
+router.patch('/settings/password', verifyToken, requireRole('super_admin'), (req: AuthRequest, res: Response) => {
+  const user = resolveSuperAdminUser(req);
   if (!user) {
     res.status(404).json({ error: 'Super Admin user not found.' });
     return;
@@ -547,6 +545,7 @@ const patchAdminPasswordHandler = (req: AuthRequest, res: Response) => {
     return;
   }
 
+  // Check current password (try both raw and trimmed)
   const isMatch = bcrypt.compareSync(current_password, user.password_hash) || bcrypt.compareSync(cleanCurrent, user.password_hash);
   if (!isMatch) {
     res.status(400).json({ error: 'Current password is incorrect. Please check and try again.' });
@@ -557,6 +556,7 @@ const patchAdminPasswordHandler = (req: AuthRequest, res: Response) => {
   const updatedUser = db.update('users', user.id, { password_hash: newHash });
   db.forceSave();
 
+  // Generate fresh token
   const token = jwt.sign(
     {
       id: updatedUser.id,
@@ -572,11 +572,6 @@ const patchAdminPasswordHandler = (req: AuthRequest, res: Response) => {
     message: 'Password changed successfully.',
     token,
   });
-};
-
-// Map routes under /admin (e.g. /api/admin/settings/profile, /api/admin/settings/password)
-router.get('/settings/profile', verifyToken, requireRole('super_admin'), getAdminProfileHandler);
-router.patch('/settings/profile', verifyToken, requireRole('super_admin'), upload.single('logo'), patchAdminProfileHandler);
-router.patch('/settings/password', verifyToken, requireRole('super_admin'), patchAdminPasswordHandler);
+});
 
 export default router;
