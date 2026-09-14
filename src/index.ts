@@ -43,8 +43,6 @@ app.use('/api', routes);
 app.get('/health', (_req, res) => {
   res.json({
     status: 'ok',
-    version: '2.1.0',
-    build: 'admin-settings-live',
     service: 'DMH DineFlow SaaS API',
     timestamp: new Date().toISOString(),
     restaurants_count: db.count('restaurants'),

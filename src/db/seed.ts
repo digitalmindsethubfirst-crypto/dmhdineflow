@@ -258,16 +258,21 @@ async function seed() {
   // ── Restaurant 3: Burgerizza ──
   const r3Id = 'e803fea9-e988-402f-94e0-fa8bce615a26';
   const r3OwnerId = uuid();
+  const r3KitchenId = uuid();
 
   db.insert('restaurants', {
     id: r3Id, name: 'Burgerizza', slug: 'burgerizza',
-    description: 'Where burger meets Pizza - Serving signature burgers, crispy broast and handcrafted pizzas.',
+    logo: 'https://images.unsplash.com/photo-1550547660-d9450f859349?w=300&auto=format&fit=crop&q=80',
+    cover_image: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1200&auto=format&fit=crop&q=80',
+    description: 'Where burger meets Pizza - Serving signature gourmet burgers, crispy broast, and handcrafted pizzas.',
     phone: '03455555590', whatsapp: '03455555590', email: 'burgerizza1@gmail.com',
     address: 'Unit No 06 Near Jazz Point Latifabad', city: 'Hyderabad',
     opening_time: '18:00', closing_time: '05:00',
     status: 'active', is_open: true, accept_orders: true,
     enable_online_ordering: true, enable_dine_in: true, enable_delivery: true,
+    package_plan: 'pro',
     delivery_fee: 100, min_order_amount: 500, estimated_delivery_time: '30-45 mins',
+    payment_methods: ['cod', 'bank_transfer', 'easypaisa', 'jazzcash'],
     tax_rate: 5, service_charge_rate: 0, currency: 'PKR',
     subscription_status: 'active', subscription_expiry: expiry,
     created_at: now, updated_at: now,
@@ -280,6 +285,13 @@ async function seed() {
     created_at: now, updated_at: now,
   });
 
+  db.insert('users', {
+    id: r3KitchenId, name: 'Chef Burgerizza', email: 'kitchen@burgerizza.com',
+    phone: '03455555591', password_hash: hash('kitchen123'),
+    role: 'kitchen_staff', status: 'active', restaurant_id: r3Id,
+    created_at: now, updated_at: now,
+  });
+
   db.insert('subscriptions', {
     id: uuid(), restaurant_id: r3Id, plan: 'Pro', status: 'active',
     start_date: now, expiry_date: expiry, amount: 5000,
@@ -287,28 +299,32 @@ async function seed() {
   });
 
   const r3Cats = [
-    { id: uuid(), name: 'Burgers & Sandwiches', desc: 'Signature Burgers & Sandwiches', order: 1 },
-    { id: uuid(), name: 'Crispy Broast', desc: 'Golden Crispy Fried Broast', order: 2 },
-    { id: uuid(), name: 'Handcrafted Pizzas', desc: 'Cheesy Hot Crust Pizzas', order: 3 },
+    { id: uuid(), name: 'Burgers & Sandwiches', desc: 'Signature gourmet burgers & toasted sandwiches', order: 1, image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&auto=format&fit=crop&q=80' },
+    { id: uuid(), name: 'Crispy Broast', desc: 'Golden crispy fried broast with signature spices', order: 2, image: 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=600&auto=format&fit=crop&q=80' },
+    { id: uuid(), name: 'Handcrafted Pizzas', desc: 'Cheesy hot-crust stone-baked pizzas', order: 3, image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=600&auto=format&fit=crop&q=80' },
+    { id: uuid(), name: 'Sides & Beverages', desc: 'Loaded fries and chilled refreshments', order: 4, image: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=600&auto=format&fit=crop&q=80' },
   ];
 
   for (const c of r3Cats) {
     db.insert('categories', {
-      id: c.id, restaurant_id: r3Id, name: c.name, description: c.desc,
+      id: c.id, restaurant_id: r3Id, name: c.name, description: c.desc, image: c.image,
       sort_order: c.order, status: 'active', created_at: now, updated_at: now,
     });
   }
 
   const r3Items = [
-    { catIdx: 0, name: 'Steak Burger', desc: 'Juicy tender steak patty with signature sauces', price: 500, origPrice: 600 },
-    { catIdx: 0, name: 'Crunch Burger', desc: 'Extra crispy chicken fillet with fresh lettuce', price: 399, origPrice: 500 },
-    { catIdx: 0, name: 'Mexican Sandwich', desc: 'Spicy Mexican grilled chicken loaded in toasted bread', price: 499, origPrice: 599 },
-    { catIdx: 0, name: 'Club Sandwiches', desc: 'Classic triple layer sandwich with chicken, egg and cheese', price: 450, origPrice: 550 },
-    { catIdx: 0, name: 'BBQ Club Sandwiches', desc: 'Smokey BBQ shredded chicken club sandwich', price: 399, origPrice: 500 },
-    { catIdx: 1, name: 'Plain Broast', desc: 'Quarter crispy golden fried broast served with fries and dip', price: 450, origPrice: 550 },
-    { catIdx: 1, name: 'Injected Broast', desc: 'Special sauce injected deep into the chicken for ultimate flavor', price: 599, origPrice: 700 },
-    { catIdx: 1, name: 'Spicy Masala Broast', desc: 'Tossed in hot peri-peri style spicy masala', price: 450, origPrice: 550 },
-    { catIdx: 2, name: 'Pizza Tikka', desc: 'Topped with spicy chicken tikka chunks, onions, and melted mozzarella', price: 500, origPrice: 650 },
+    { catIdx: 0, name: 'Steak Burger', desc: 'Juicy tender steak patty with caramelized onions, cheddar cheese and signature sauces', price: 500, origPrice: 600, image: 'https://images.unsplash.com/photo-1586190848861-99aa4a171e90?w=600&auto=format&fit=crop&q=80', variants: [{ name: 'Single Patty', price: 500 }, { name: 'Double Patty', price: 750 }] },
+    { catIdx: 0, name: 'Crunch Burger', desc: 'Extra crispy golden fried chicken fillet topped with fresh iceberg and spicy mayo', price: 399, origPrice: 500, image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&auto=format&fit=crop&q=80', variants: [{ name: 'Classic Regular', price: 399 }, { name: 'Spicy Zinger', price: 449 }] },
+    { catIdx: 0, name: 'Mexican Sandwich', desc: 'Spicy Mexican grilled chicken strips loaded in toasted artisan bread with jalapenos', price: 499, origPrice: 599, image: 'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=600&auto=format&fit=crop&q=80', variants: [] },
+    { catIdx: 0, name: 'Club Sandwiches', desc: 'Classic triple layer club sandwich with shredded chicken, boiled egg, cheese and salad', price: 450, origPrice: 550, image: 'https://images.unsplash.com/photo-1553909489-cd47e0907980?w=600&auto=format&fit=crop&q=80', variants: [] },
+    { catIdx: 0, name: 'BBQ Club Sandwiches', desc: 'Smokey BBQ shredded chicken club sandwich served with french fries and garlic mayo', price: 399, origPrice: 500, image: 'https://images.unsplash.com/photo-1509722747041-616f39b57569?w=600&auto=format&fit=crop&q=80', variants: [] },
+    { catIdx: 1, name: 'Plain Broast', desc: 'Quarter crispy golden fried broast served with french fries, garlic sauce and dinner roll', price: 450, origPrice: 550, image: 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=600&auto=format&fit=crop&q=80', variants: [{ name: 'Quarter (1 Pc)', price: 450 }, { name: 'Half (2 Pcs)', price: 850 }] },
+    { catIdx: 1, name: 'Injected Broast', desc: 'Special secret spiced sauce injected deep into the chicken meat for explosive tenderness and flavor', price: 599, origPrice: 700, image: 'https://images.unsplash.com/photo-1562967914-608f82629710?w=600&auto=format&fit=crop&q=80', variants: [{ name: 'Quarter (1 Pc)', price: 599 }, { name: 'Half (2 Pcs)', price: 1100 }] },
+    { catIdx: 1, name: 'Spicy Masala Broast', desc: 'Quarter crispy broast generously tossed in hot peri-peri style aromatic red masala', price: 450, origPrice: 550, image: 'https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?w=600&auto=format&fit=crop&q=80', variants: [{ name: 'Quarter (1 Pc)', price: 450 }, { name: 'Half (2 Pcs)', price: 850 }] },
+    { catIdx: 2, name: 'Pizza Tikka', desc: 'Topped with spicy marinated chicken tikka chunks, onions, green peppers and melted mozzarella cheese', price: 500, origPrice: 650, image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=600&auto=format&fit=crop&q=80', variants: [{ name: 'Small 8"', price: 500 }, { name: 'Medium 10"', price: 950 }, { name: 'Large 13"', price: 1450 }] },
+    { catIdx: 2, name: 'Pizza Fajita', desc: 'Smokey chicken fajita chunks, capsicum, olives, mushrooms and generous mozzarella cheese layer', price: 550, origPrice: 700, image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&auto=format&fit=crop&q=80', variants: [{ name: 'Small 8"', price: 550 }, { name: 'Medium 10"', price: 1050 }, { name: 'Large 13"', price: 1550 }] },
+    { catIdx: 3, name: 'Loaded Fries', desc: 'Crispy french fries loaded with cheddar cheese sauce, chicken chunks and sliced jalapenos', price: 350, origPrice: 450, image: 'https://images.unsplash.com/photo-1585109649139-366815a0d713?w=600&auto=format&fit=crop&q=80', variants: [] },
+    { catIdx: 3, name: 'Coca Cola / Soft Drinks', desc: 'Chilled refreshing soft drinks', price: 120, origPrice: 140, image: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=600&auto=format&fit=crop&q=80', variants: [{ name: 'Regular 500ml', price: 120 }, { name: 'Large 1.5L', price: 250 }] },
   ];
 
   for (let i = 0; i < r3Items.length; i++) {
@@ -317,11 +333,17 @@ async function seed() {
     db.insert('menu_items', {
       id: itemId, restaurant_id: r3Id, category_id: r3Cats[item.catIdx].id,
       name: item.name, description: item.desc, base_price: item.price, original_price: item.origPrice,
+      image: item.image,
       available: true, sort_order: i + 1, created_at: now, updated_at: now,
     });
+    for (const v of item.variants) {
+      db.insert('item_variants', {
+        id: uuid(), item_id: itemId, name: v.name, price: v.price, status: 'active',
+      });
+    }
   }
 
-  for (let t = 1; t <= 5; t++) {
+  for (let t = 1; t <= 8; t++) {
     db.insert('tables', {
       id: uuid(), restaurant_id: r3Id, table_number: t, qr_token: uuid(),
       status: 'active', created_at: now, updated_at: now,

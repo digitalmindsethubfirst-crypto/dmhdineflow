@@ -1,56 +1,80 @@
 {
   "users": [
     {
-      "id": "cfb1bdc8-553f-44fb-bab8-b34999b1cde9",
+      "id": "088ad5d0-26d8-46d9-8ef8-27a64d19e0e4",
       "name": "Super Admin",
       "email": "admin@dineflow.com",
       "phone": "03001234567",
-      "password_hash": "$2a$10$DYsvucB3ximdKrFtyy3fsuUxHbcfBJ7BMPtIFLjq5/.OHLRFE96bm",
+      "password_hash": "$2a$10$fBwonWDwmFsIgvtfVUEAku1sM3sxia2rMSxOc2xhZx6zWSU/w/iK.",
       "role": "super_admin",
       "status": "active",
-      "created_at": "2026-09-01T16:43:26.346Z",
-      "updated_at": "2026-09-01T16:43:26.346Z"
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
     },
     {
-      "id": "9741d522-d859-45f3-b7f6-eb7fc783ac16",
+      "id": "21c85a0e-af1e-4c1b-8d4a-b7d83c24eeee",
       "name": "Ahmed Khan",
       "email": "owner@royalkarahi.com",
       "phone": "03211234567",
-      "password_hash": "$2a$10$PLkE/ykM9AIMED61pD2fb.cnynGyEvI22R9CafiM4scSuSAwUTlJm",
+      "password_hash": "$2a$10$CyxBPxHS5wgLGu5ulDdJaemGxXVJ4/SjjbvSjbMjnfyEMFI5H2T82",
       "role": "restaurant_owner",
       "status": "active",
-      "restaurant_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
-      "created_at": "2026-09-01T16:43:26.346Z",
-      "updated_at": "2026-09-01T16:43:26.346Z"
+      "restaurant_id": "2cf7cad9-3568-434c-a6e3-33f05f708002",
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
     },
     {
-      "id": "b9808558-b0de-4f8b-a7d7-6e95b5fc9315",
+      "id": "c815f7bd-e6e8-462e-8429-9cd43b01e0b0",
       "name": "Chef Rashid",
       "email": "kitchen@royalkarahi.com",
       "phone": "03311234567",
-      "password_hash": "$2a$10$Vf6Kx6nFv4cjJNcYmn1meuUuWdbjwTzH3PbaALZiz609BF48OWbwW",
+      "password_hash": "$2a$10$74oUURh8P31E/Cgtj/hrfO38w4iqY9ZjN71RoNVEhQRKUiAj3Z8V.",
       "role": "kitchen_staff",
       "status": "active",
-      "restaurant_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
-      "created_at": "2026-09-01T16:43:26.346Z",
-      "updated_at": "2026-09-01T16:43:26.346Z"
+      "restaurant_id": "2cf7cad9-3568-434c-a6e3-33f05f708002",
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
     },
     {
-      "id": "05981345-332f-4ce6-8f0f-c1a989cd2099",
+      "id": "0db2c270-49c6-47ea-8a5e-fe5058186ee9",
       "name": "Sara Ali",
       "email": "owner@artisan.com",
       "phone": "03219876543",
-      "password_hash": "$2a$10$t11J.f0uLrkMr.ShF3O4AON2LN2wTg2kFm5M0c0dEx3W1x9VVdd6G",
+      "password_hash": "$2a$10$Uh/UjpI39fOwHLf3JYenMe4rch4N3VyOB3lwE.BvD72vFCngun/z6",
       "role": "restaurant_owner",
       "status": "active",
-      "restaurant_id": "63bfac41-2105-4d9c-833d-2987d739c0aa",
-      "created_at": "2026-09-01T16:43:26.346Z",
-      "updated_at": "2026-09-01T16:43:26.346Z"
+      "restaurant_id": "a30fb233-41a2-4dfa-a715-b600897b08e1",
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
+    },
+    {
+      "id": "96c04029-9705-4866-bba7-0c740bac1101",
+      "name": "Nasir",
+      "email": "burgerizza1@gmail.com",
+      "phone": "03455555590",
+      "password_hash": "$2a$10$jrDYlV0OoO1SuxDXi604OeKuwKc81yaYbPreRFfddC7QvXNcFj4ca",
+      "role": "restaurant_owner",
+      "status": "active",
+      "restaurant_id": "e803fea9-e988-402f-94e0-fa8bce615a26",
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
+    },
+    {
+      "id": "6caa6d80-3b1a-4d68-b0e3-ca4a122e5ed5",
+      "name": "Chef Burgerizza",
+      "email": "kitchen@burgerizza.com",
+      "phone": "03455555591",
+      "password_hash": "$2a$10$73G3TQ/N4PY8ZEvTm3IzWeUHGGsi83SQ6e8PV8g4QPoqlG5lHYqXC",
+      "role": "kitchen_staff",
+      "status": "active",
+      "restaurant_id": "e803fea9-e988-402f-94e0-fa8bce615a26",
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
     }
   ],
   "restaurants": [
     {
-      "id": "e612217e-2cb2-437f-908b-0e90096a84fc",
+      "id": "2cf7cad9-3568-434c-a6e3-33f05f708002",
       "name": "Royal Karahi",
       "slug": "royal-karahi",
       "description": "Authentic Pakistani cuisine with traditional karahi, BBQ, and biryani specialties. Serving since 2010.",
@@ -68,12 +92,12 @@
       "service_charge_rate": 0,
       "currency": "PKR",
       "subscription_status": "active",
-      "subscription_expiry": "2027-10-01T16:43:26.347Z",
-      "created_at": "2026-09-01T16:43:26.346Z",
-      "updated_at": "2026-09-02T13:44:59.692Z"
+      "subscription_expiry": "2027-09-14T17:37:49.298Z",
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
     },
     {
-      "id": "63bfac41-2105-4d9c-833d-2987d739c0aa",
+      "id": "a30fb233-41a2-4dfa-a715-b600897b08e1",
       "name": "Artisan Pizza & Pasta",
       "slug": "artisan-pizza",
       "description": "Handcrafted pizzas and fresh pasta made with imported Italian ingredients.",
@@ -91,820 +115,1226 @@
       "service_charge_rate": 5,
       "currency": "PKR",
       "subscription_status": "active",
-      "subscription_expiry": "2027-09-01T16:43:26.347Z",
-      "created_at": "2026-09-01T16:43:26.346Z",
-      "updated_at": "2026-09-02T13:45:11.244Z"
+      "subscription_expiry": "2027-09-14T17:37:49.298Z",
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
+    },
+    {
+      "id": "e803fea9-e988-402f-94e0-fa8bce615a26",
+      "name": "Burgerizza",
+      "slug": "burgerizza",
+      "logo": "https://images.unsplash.com/photo-1550547660-d9450f859349?w=300&auto=format&fit=crop&q=80",
+      "cover_image": "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1200&auto=format&fit=crop&q=80",
+      "description": "Where burger meets Pizza - Serving signature gourmet burgers, crispy broast, and handcrafted pizzas.",
+      "phone": "03455555590",
+      "whatsapp": "03455555590",
+      "email": "burgerizza1@gmail.com",
+      "address": "Unit No 06 Near Jazz Point Latifabad",
+      "city": "Hyderabad",
+      "opening_time": "18:00",
+      "closing_time": "05:00",
+      "status": "active",
+      "is_open": true,
+      "accept_orders": true,
+      "enable_online_ordering": true,
+      "enable_dine_in": true,
+      "enable_delivery": true,
+      "package_plan": "pro",
+      "delivery_fee": 100,
+      "min_order_amount": 500,
+      "estimated_delivery_time": "30-45 mins",
+      "payment_methods": [
+        "cod",
+        "bank_transfer",
+        "easypaisa",
+        "jazzcash"
+      ],
+      "tax_rate": 5,
+      "service_charge_rate": 0,
+      "currency": "PKR",
+      "subscription_status": "active",
+      "subscription_expiry": "2027-09-14T17:37:49.298Z",
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
     }
   ],
   "categories": [
     {
-      "id": "df5b2e9e-1ecf-4895-a64d-962a2b49809a",
-      "restaurant_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
+      "id": "8c1772c2-5100-40d0-9a5f-83717a568c7d",
+      "restaurant_id": "2cf7cad9-3568-434c-a6e3-33f05f708002",
       "name": "Karahi",
       "description": "Traditional karahi dishes cooked in wok",
       "sort_order": 1,
       "status": "active",
-      "created_at": "2026-09-01T16:43:26.346Z",
-      "updated_at": "2026-09-01T16:43:26.346Z"
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
     },
     {
-      "id": "722a45b7-60c9-468e-8083-57f4f3540117",
-      "restaurant_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
+      "id": "10778bc0-3224-46e6-91b3-5cf351d9903a",
+      "restaurant_id": "2cf7cad9-3568-434c-a6e3-33f05f708002",
       "name": "BBQ",
       "description": "Grilled meats and tikka specialties",
       "sort_order": 2,
       "status": "active",
-      "created_at": "2026-09-01T16:43:26.346Z",
-      "updated_at": "2026-09-01T16:43:26.346Z"
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
     },
     {
-      "id": "9a9eaf40-96b4-4515-b86c-1110b98fefc8",
-      "restaurant_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
+      "id": "ae36369f-a49f-44ab-8263-52935c41f27a",
+      "restaurant_id": "2cf7cad9-3568-434c-a6e3-33f05f708002",
       "name": "Biryani & Rice",
       "description": "Aromatic rice dishes",
       "sort_order": 3,
       "status": "active",
-      "created_at": "2026-09-01T16:43:26.346Z",
-      "updated_at": "2026-09-01T16:43:26.346Z"
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
     },
     {
-      "id": "48b9ef99-cc44-4259-9f60-c1dd0cd677d9",
-      "restaurant_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
+      "id": "1a273273-b01e-4673-ae53-f5250fc27bc4",
+      "restaurant_id": "2cf7cad9-3568-434c-a6e3-33f05f708002",
       "name": "Naan & Roti",
       "description": "Fresh baked breads",
       "sort_order": 4,
       "status": "active",
-      "created_at": "2026-09-01T16:43:26.346Z",
-      "updated_at": "2026-09-01T16:43:26.346Z"
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
     },
     {
-      "id": "b4c4d414-fe34-49d1-834d-d3876bba4713",
-      "restaurant_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
+      "id": "99381715-9fc4-4f22-931f-f4874710200d",
+      "restaurant_id": "2cf7cad9-3568-434c-a6e3-33f05f708002",
       "name": "Drinks",
       "description": "Refreshing beverages",
       "sort_order": 5,
       "status": "active",
-      "created_at": "2026-09-01T16:43:26.346Z",
-      "updated_at": "2026-09-01T16:43:26.346Z"
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
     },
     {
-      "id": "a552e777-321c-4a5f-ad62-4f28ac14c110",
-      "restaurant_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
+      "id": "6ae58201-5c3a-4814-9c9c-79aedbb568f1",
+      "restaurant_id": "2cf7cad9-3568-434c-a6e3-33f05f708002",
       "name": "Desserts",
       "description": "Sweet delights",
       "sort_order": 6,
       "status": "active",
-      "created_at": "2026-09-01T16:43:26.346Z",
-      "updated_at": "2026-09-01T16:43:26.346Z"
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
     },
     {
-      "id": "2d6e5aa3-76c4-4135-9268-3280906a0533",
-      "restaurant_id": "63bfac41-2105-4d9c-833d-2987d739c0aa",
+      "id": "b67e1cfb-af63-41fd-a90d-4e9d4494f26d",
+      "restaurant_id": "a30fb233-41a2-4dfa-a715-b600897b08e1",
       "name": "Pizza",
       "description": "Handcrafted wood-fired pizzas",
       "sort_order": 1,
       "status": "active",
-      "created_at": "2026-09-01T16:43:26.346Z",
-      "updated_at": "2026-09-01T16:43:26.346Z"
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
     },
     {
-      "id": "386f4732-b9fc-417d-a52d-784eaa1614d5",
-      "restaurant_id": "63bfac41-2105-4d9c-833d-2987d739c0aa",
+      "id": "dd682749-0b9c-4e2e-bc8f-3250def6fe1d",
+      "restaurant_id": "a30fb233-41a2-4dfa-a715-b600897b08e1",
       "name": "Pasta",
       "description": "Fresh homemade pasta",
       "sort_order": 2,
       "status": "active",
-      "created_at": "2026-09-01T16:43:26.346Z",
-      "updated_at": "2026-09-01T16:43:26.346Z"
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
     },
     {
-      "id": "4d07c7e6-58c3-4ae5-aa89-9f5b948b9781",
-      "restaurant_id": "63bfac41-2105-4d9c-833d-2987d739c0aa",
+      "id": "c888847a-7f64-4789-9ca7-731a8d296771",
+      "restaurant_id": "a30fb233-41a2-4dfa-a715-b600897b08e1",
       "name": "Appetizers",
       "description": "Starters and sides",
       "sort_order": 3,
       "status": "active",
-      "created_at": "2026-09-01T16:43:26.346Z",
-      "updated_at": "2026-09-01T16:43:26.346Z"
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
     },
     {
-      "id": "9eb699ff-d4a6-4e3b-9ddf-856aff255671",
-      "restaurant_id": "63bfac41-2105-4d9c-833d-2987d739c0aa",
+      "id": "7dbc0a2a-0aaa-4da7-a6ca-80ed51124404",
+      "restaurant_id": "a30fb233-41a2-4dfa-a715-b600897b08e1",
       "name": "Beverages",
       "description": "Drinks and shakes",
       "sort_order": 4,
       "status": "active",
-      "created_at": "2026-09-01T16:43:26.346Z",
-      "updated_at": "2026-09-01T16:43:26.346Z"
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
+    },
+    {
+      "id": "5bb3ae97-16dc-4ce1-9727-c43bc82db8d7",
+      "restaurant_id": "e803fea9-e988-402f-94e0-fa8bce615a26",
+      "name": "Burgers & Sandwiches",
+      "description": "Signature gourmet burgers & toasted sandwiches",
+      "image": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&auto=format&fit=crop&q=80",
+      "sort_order": 1,
+      "status": "active",
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
+    },
+    {
+      "id": "8e2a66aa-98a8-49b3-a423-5a4f83f9c1a1",
+      "restaurant_id": "e803fea9-e988-402f-94e0-fa8bce615a26",
+      "name": "Crispy Broast",
+      "description": "Golden crispy fried broast with signature spices",
+      "image": "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=600&auto=format&fit=crop&q=80",
+      "sort_order": 2,
+      "status": "active",
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
+    },
+    {
+      "id": "e8a95e58-7ee2-468a-84f0-889c31d1aaa1",
+      "restaurant_id": "e803fea9-e988-402f-94e0-fa8bce615a26",
+      "name": "Handcrafted Pizzas",
+      "description": "Cheesy hot-crust stone-baked pizzas",
+      "image": "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=600&auto=format&fit=crop&q=80",
+      "sort_order": 3,
+      "status": "active",
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
+    },
+    {
+      "id": "4b3ecf0a-087a-41cd-8ecc-965c5a45d7f0",
+      "restaurant_id": "e803fea9-e988-402f-94e0-fa8bce615a26",
+      "name": "Sides & Beverages",
+      "description": "Loaded fries and chilled refreshments",
+      "image": "https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=600&auto=format&fit=crop&q=80",
+      "sort_order": 4,
+      "status": "active",
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
     }
   ],
   "menu_items": [
     {
-      "id": "4e59928b-2873-479c-9af1-66d8e1435773",
-      "restaurant_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
-      "category_id": "df5b2e9e-1ecf-4895-a64d-962a2b49809a",
+      "id": "41c402ce-8889-4f30-b4f1-ce49b5761627",
+      "restaurant_id": "2cf7cad9-3568-434c-a6e3-33f05f708002",
+      "category_id": "8c1772c2-5100-40d0-9a5f-83717a568c7d",
       "name": "Chicken Karahi",
       "description": "Traditional chicken karahi prepared with fresh tomatoes, green chilies, and aromatic spices",
       "base_price": 850,
       "available": true,
       "sort_order": 1,
-      "created_at": "2026-09-01T16:43:26.346Z",
-      "updated_at": "2026-09-01T16:43:26.346Z"
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
     },
     {
-      "id": "1b5d7137-7cfc-4bbb-8062-0b6010c831af",
-      "restaurant_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
-      "category_id": "df5b2e9e-1ecf-4895-a64d-962a2b49809a",
+      "id": "34107604-150f-4de9-8106-2ba52624c3a4",
+      "restaurant_id": "2cf7cad9-3568-434c-a6e3-33f05f708002",
+      "category_id": "8c1772c2-5100-40d0-9a5f-83717a568c7d",
       "name": "Mutton Karahi",
       "description": "Tender mutton cooked in a wok with special masala blend",
       "base_price": 1200,
       "available": true,
       "sort_order": 2,
-      "created_at": "2026-09-01T16:43:26.346Z",
-      "updated_at": "2026-09-01T16:43:26.346Z"
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
     },
     {
-      "id": "c53604b8-9bb1-4d54-83fa-ccb2857a8ff1",
-      "restaurant_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
-      "category_id": "df5b2e9e-1ecf-4895-a64d-962a2b49809a",
+      "id": "172bb0c4-9d55-4c18-bd33-90deb0d536f7",
+      "restaurant_id": "2cf7cad9-3568-434c-a6e3-33f05f708002",
+      "category_id": "8c1772c2-5100-40d0-9a5f-83717a568c7d",
       "name": "Beef Karahi",
       "description": "Juicy beef karahi with rich gravy and fresh ingredients",
       "base_price": 950,
       "available": true,
       "sort_order": 3,
-      "created_at": "2026-09-01T16:43:26.346Z",
-      "updated_at": "2026-09-01T16:43:26.346Z"
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
     },
     {
-      "id": "156da1c8-049c-4ad0-8579-47503221d2dc",
-      "restaurant_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
-      "category_id": "df5b2e9e-1ecf-4895-a64d-962a2b49809a",
+      "id": "2ce16dc9-68a5-4898-b65b-fc92a4139d3c",
+      "restaurant_id": "2cf7cad9-3568-434c-a6e3-33f05f708002",
+      "category_id": "8c1772c2-5100-40d0-9a5f-83717a568c7d",
       "name": "Prawn Karahi",
       "description": "Fresh prawns cooked karahi style with tomatoes and spices",
       "base_price": 1400,
       "available": true,
       "sort_order": 4,
-      "created_at": "2026-09-01T16:43:26.346Z",
-      "updated_at": "2026-09-01T16:43:26.346Z"
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
     },
     {
-      "id": "e0890aee-b05d-432d-adbb-19f60895c5af",
-      "restaurant_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
-      "category_id": "722a45b7-60c9-468e-8083-57f4f3540117",
+      "id": "c672148f-c81c-4ca3-9986-0c84a682ed5e",
+      "restaurant_id": "2cf7cad9-3568-434c-a6e3-33f05f708002",
+      "category_id": "10778bc0-3224-46e6-91b3-5cf351d9903a",
       "name": "Chicken Tikka",
       "description": "Marinated chicken pieces grilled to perfection in tandoor",
       "base_price": 650,
       "available": true,
       "sort_order": 5,
-      "created_at": "2026-09-01T16:43:26.346Z",
-      "updated_at": "2026-09-01T16:43:26.346Z"
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
     },
     {
-      "id": "d325fed7-8abe-4fbd-bda3-af8c5eadc93c",
-      "restaurant_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
-      "category_id": "722a45b7-60c9-468e-8083-57f4f3540117",
+      "id": "0ebe0697-d2a8-450e-a2f6-ea18c4974761",
+      "restaurant_id": "2cf7cad9-3568-434c-a6e3-33f05f708002",
+      "category_id": "10778bc0-3224-46e6-91b3-5cf351d9903a",
       "name": "Seekh Kebab",
       "description": "Spiced minced meat kebabs grilled on skewers",
       "base_price": 500,
       "available": true,
       "sort_order": 6,
-      "created_at": "2026-09-01T16:43:26.346Z",
-      "updated_at": "2026-09-01T16:43:26.346Z"
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
     },
     {
-      "id": "380ed13b-ff7b-46e0-9f45-8e96600ecfd5",
-      "restaurant_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
-      "category_id": "722a45b7-60c9-468e-8083-57f4f3540117",
+      "id": "6c3b7833-e9a5-4ab1-aa56-1436491daa52",
+      "restaurant_id": "2cf7cad9-3568-434c-a6e3-33f05f708002",
+      "category_id": "10778bc0-3224-46e6-91b3-5cf351d9903a",
       "name": "Malai Boti",
       "description": "Creamy marinated chicken cubes grilled in tandoor",
       "base_price": 750,
       "available": true,
       "sort_order": 7,
-      "created_at": "2026-09-01T16:43:26.346Z",
-      "updated_at": "2026-09-01T16:43:26.346Z"
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
     },
     {
-      "id": "d434e7f0-a1f5-43ab-885f-26f0b4217cfc",
-      "restaurant_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
-      "category_id": "722a45b7-60c9-468e-8083-57f4f3540117",
+      "id": "1552d3f8-1e31-43ee-8101-69e94cea60b6",
+      "restaurant_id": "2cf7cad9-3568-434c-a6e3-33f05f708002",
+      "category_id": "10778bc0-3224-46e6-91b3-5cf351d9903a",
       "name": "Mutton Chops",
       "description": "Tender mutton chops marinated and grilled",
       "base_price": 1100,
       "available": true,
       "sort_order": 8,
-      "created_at": "2026-09-01T16:43:26.346Z",
-      "updated_at": "2026-09-01T16:43:26.346Z"
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
     },
     {
-      "id": "fe523918-f61a-4b23-bf8d-f6a859bb16d9",
-      "restaurant_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
-      "category_id": "9a9eaf40-96b4-4515-b86c-1110b98fefc8",
+      "id": "11b07d5c-948a-4e1d-8389-6ccf9065cf02",
+      "restaurant_id": "2cf7cad9-3568-434c-a6e3-33f05f708002",
+      "category_id": "ae36369f-a49f-44ab-8263-52935c41f27a",
       "name": "Chicken Biryani",
       "description": "Fragrant basmati rice layered with spiced chicken",
       "base_price": 450,
       "available": true,
       "sort_order": 9,
-      "created_at": "2026-09-01T16:43:26.346Z",
-      "updated_at": "2026-09-01T16:43:26.346Z"
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
     },
     {
-      "id": "dbb42559-9de1-42c5-80c2-829d32b135e8",
-      "restaurant_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
-      "category_id": "9a9eaf40-96b4-4515-b86c-1110b98fefc8",
+      "id": "0fe1d68c-d95a-4c1d-8e09-965b4f4a8c05",
+      "restaurant_id": "2cf7cad9-3568-434c-a6e3-33f05f708002",
+      "category_id": "ae36369f-a49f-44ab-8263-52935c41f27a",
       "name": "Mutton Biryani",
       "description": "Aromatic rice with tender mutton pieces",
       "base_price": 550,
       "available": true,
       "sort_order": 10,
-      "created_at": "2026-09-01T16:43:26.346Z",
-      "updated_at": "2026-09-01T16:43:26.346Z"
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
     },
     {
-      "id": "b9eb76dd-7a6e-4ce6-aa92-188bfb9d0596",
-      "restaurant_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
-      "category_id": "9a9eaf40-96b4-4515-b86c-1110b98fefc8",
+      "id": "da0bd258-e83a-4651-9d21-d0bfef77f96d",
+      "restaurant_id": "2cf7cad9-3568-434c-a6e3-33f05f708002",
+      "category_id": "ae36369f-a49f-44ab-8263-52935c41f27a",
       "name": "Chicken Pulao",
       "description": "Lightly spiced rice with chicken",
       "base_price": 400,
       "available": true,
       "sort_order": 11,
-      "created_at": "2026-09-01T16:43:26.346Z",
-      "updated_at": "2026-09-01T16:43:26.346Z"
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
     },
     {
-      "id": "bc03d08b-1ca1-4c0b-a4c5-fb7b810a5489",
-      "restaurant_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
-      "category_id": "48b9ef99-cc44-4259-9f60-c1dd0cd677d9",
+      "id": "ce593f3b-8de3-43ff-9a92-43558785459b",
+      "restaurant_id": "2cf7cad9-3568-434c-a6e3-33f05f708002",
+      "category_id": "1a273273-b01e-4673-ae53-f5250fc27bc4",
       "name": "Butter Naan",
       "description": "Soft leavened bread brushed with butter",
       "base_price": 80,
       "available": true,
       "sort_order": 12,
-      "created_at": "2026-09-01T16:43:26.346Z",
-      "updated_at": "2026-09-01T16:43:26.346Z"
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
     },
     {
-      "id": "c3b0995c-919d-4352-ae4f-41ddf418b49f",
-      "restaurant_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
-      "category_id": "48b9ef99-cc44-4259-9f60-c1dd0cd677d9",
+      "id": "0f960fd1-0662-4def-8a8a-7c288d41f061",
+      "restaurant_id": "2cf7cad9-3568-434c-a6e3-33f05f708002",
+      "category_id": "1a273273-b01e-4673-ae53-f5250fc27bc4",
       "name": "Garlic Naan",
       "description": "Naan topped with fresh garlic and herbs",
       "base_price": 100,
       "available": true,
       "sort_order": 13,
-      "created_at": "2026-09-01T16:43:26.346Z",
-      "updated_at": "2026-09-01T16:43:26.346Z"
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
     },
     {
-      "id": "f925020e-c861-4c9c-abb3-dbc67de5849e",
-      "restaurant_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
-      "category_id": "48b9ef99-cc44-4259-9f60-c1dd0cd677d9",
+      "id": "3c05e304-032c-4bd3-8111-ad05c35185f0",
+      "restaurant_id": "2cf7cad9-3568-434c-a6e3-33f05f708002",
+      "category_id": "1a273273-b01e-4673-ae53-f5250fc27bc4",
       "name": "Roghni Naan",
       "description": "Rich buttery naan with sesame seeds",
       "base_price": 120,
       "available": true,
       "sort_order": 14,
-      "created_at": "2026-09-01T16:43:26.346Z",
-      "updated_at": "2026-09-01T16:43:26.346Z"
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
     },
     {
-      "id": "26d7612a-285f-45a1-b7a3-3b242fc9f8b0",
-      "restaurant_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
-      "category_id": "b4c4d414-fe34-49d1-834d-d3876bba4713",
+      "id": "5dbae0d3-b870-4367-8964-1c8ad1987316",
+      "restaurant_id": "2cf7cad9-3568-434c-a6e3-33f05f708002",
+      "category_id": "99381715-9fc4-4f22-931f-f4874710200d",
       "name": "Coca Cola",
       "description": "Chilled Coca Cola",
       "base_price": 120,
       "available": true,
       "sort_order": 15,
-      "created_at": "2026-09-01T16:43:26.346Z",
-      "updated_at": "2026-09-01T16:43:26.346Z"
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
     },
     {
-      "id": "42b607f2-467f-4a65-a910-e53b2872b583",
-      "restaurant_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
-      "category_id": "b4c4d414-fe34-49d1-834d-d3876bba4713",
+      "id": "e3193f9d-d783-4dd1-afe5-4c149a90d01a",
+      "restaurant_id": "2cf7cad9-3568-434c-a6e3-33f05f708002",
+      "category_id": "99381715-9fc4-4f22-931f-f4874710200d",
       "name": "Fresh Lime Water",
       "description": "Freshly squeezed lime with mint",
       "base_price": 150,
       "available": true,
       "sort_order": 16,
-      "created_at": "2026-09-01T16:43:26.346Z",
-      "updated_at": "2026-09-01T16:43:26.346Z"
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
     },
     {
-      "id": "09024c79-39d4-47de-9943-6e95aa436f6a",
-      "restaurant_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
-      "category_id": "b4c4d414-fe34-49d1-834d-d3876bba4713",
+      "id": "175683d6-6e15-4a13-be52-34beb14402d4",
+      "restaurant_id": "2cf7cad9-3568-434c-a6e3-33f05f708002",
+      "category_id": "99381715-9fc4-4f22-931f-f4874710200d",
       "name": "Lassi",
       "description": "Traditional yogurt drink",
       "base_price": 180,
       "available": true,
       "sort_order": 17,
-      "created_at": "2026-09-01T16:43:26.346Z",
-      "updated_at": "2026-09-01T16:43:26.346Z"
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
     },
     {
-      "id": "f604b7ee-ce3a-46a4-be25-e9704fe4e1e6",
-      "restaurant_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
-      "category_id": "a552e777-321c-4a5f-ad62-4f28ac14c110",
+      "id": "e5a2599a-6797-4a49-8f4f-b735205c3fa6",
+      "restaurant_id": "2cf7cad9-3568-434c-a6e3-33f05f708002",
+      "category_id": "6ae58201-5c3a-4814-9c9c-79aedbb568f1",
       "name": "Kheer",
       "description": "Creamy rice pudding with cardamom and nuts",
       "base_price": 250,
       "available": true,
       "sort_order": 18,
-      "created_at": "2026-09-01T16:43:26.346Z",
-      "updated_at": "2026-09-01T16:43:26.346Z"
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
     },
     {
-      "id": "c7c283fc-57ca-4195-b298-2cd5c6a1b897",
-      "restaurant_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
-      "category_id": "a552e777-321c-4a5f-ad62-4f28ac14c110",
+      "id": "e6206b64-a87b-4dfd-8154-05fe7c35154a",
+      "restaurant_id": "2cf7cad9-3568-434c-a6e3-33f05f708002",
+      "category_id": "6ae58201-5c3a-4814-9c9c-79aedbb568f1",
       "name": "Gulab Jamun",
       "description": "Deep fried milk dumplings in sugar syrup",
       "base_price": 200,
       "available": true,
       "sort_order": 19,
-      "created_at": "2026-09-01T16:43:26.346Z",
-      "updated_at": "2026-09-01T16:43:26.346Z"
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
     },
     {
-      "id": "d72524ae-65ce-4e21-8890-e78f1030131f",
-      "restaurant_id": "63bfac41-2105-4d9c-833d-2987d739c0aa",
-      "category_id": "2d6e5aa3-76c4-4135-9268-3280906a0533",
+      "id": "ee2a11c8-660c-4179-9410-3f82eeb32c0b",
+      "restaurant_id": "a30fb233-41a2-4dfa-a715-b600897b08e1",
+      "category_id": "b67e1cfb-af63-41fd-a90d-4e9d4494f26d",
       "name": "Margherita Pizza",
       "description": "Classic tomato sauce, mozzarella, fresh basil",
       "base_price": 950,
       "available": true,
       "sort_order": 1,
-      "created_at": "2026-09-01T16:43:26.346Z",
-      "updated_at": "2026-09-01T16:43:26.346Z"
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
     },
     {
-      "id": "245ef35c-80d1-4af6-85ae-1f4acabd87d7",
-      "restaurant_id": "63bfac41-2105-4d9c-833d-2987d739c0aa",
-      "category_id": "2d6e5aa3-76c4-4135-9268-3280906a0533",
+      "id": "28a8c0ac-60a6-4767-a733-ed4581ffe842",
+      "restaurant_id": "a30fb233-41a2-4dfa-a715-b600897b08e1",
+      "category_id": "b67e1cfb-af63-41fd-a90d-4e9d4494f26d",
       "name": "Pepperoni Pizza",
       "description": "Loaded with pepperoni and melted cheese",
       "base_price": 1100,
       "available": true,
       "sort_order": 2,
-      "created_at": "2026-09-01T16:43:26.346Z",
-      "updated_at": "2026-09-01T16:43:26.346Z"
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
     },
     {
-      "id": "7974e187-19bc-441e-9a5e-72e264ab7538",
-      "restaurant_id": "63bfac41-2105-4d9c-833d-2987d739c0aa",
-      "category_id": "2d6e5aa3-76c4-4135-9268-3280906a0533",
+      "id": "b753bc14-2c1c-4e23-b215-ea5c57f70399",
+      "restaurant_id": "a30fb233-41a2-4dfa-a715-b600897b08e1",
+      "category_id": "b67e1cfb-af63-41fd-a90d-4e9d4494f26d",
       "name": "BBQ Chicken Pizza",
       "description": "BBQ sauce, grilled chicken, red onion, cilantro",
       "base_price": 1200,
       "available": true,
       "sort_order": 3,
-      "created_at": "2026-09-01T16:43:26.346Z",
-      "updated_at": "2026-09-01T16:43:26.346Z"
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
     },
     {
-      "id": "b68f43d4-8d84-47c7-ac1d-868f30aef8bb",
-      "restaurant_id": "63bfac41-2105-4d9c-833d-2987d739c0aa",
-      "category_id": "386f4732-b9fc-417d-a52d-784eaa1614d5",
+      "id": "e736e4c9-916d-4d13-bdb8-941db886c842",
+      "restaurant_id": "a30fb233-41a2-4dfa-a715-b600897b08e1",
+      "category_id": "dd682749-0b9c-4e2e-bc8f-3250def6fe1d",
       "name": "Spaghetti Carbonara",
       "description": "Creamy egg sauce with pancetta and parmesan",
       "base_price": 850,
       "available": true,
       "sort_order": 4,
-      "created_at": "2026-09-01T16:43:26.346Z",
-      "updated_at": "2026-09-01T16:43:26.346Z"
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
     },
     {
-      "id": "9c29e8e8-bf1e-407b-ab02-74a0c131ce81",
-      "restaurant_id": "63bfac41-2105-4d9c-833d-2987d739c0aa",
-      "category_id": "386f4732-b9fc-417d-a52d-784eaa1614d5",
+      "id": "f4951712-ad49-4d66-abf7-0c13d47777ab",
+      "restaurant_id": "a30fb233-41a2-4dfa-a715-b600897b08e1",
+      "category_id": "dd682749-0b9c-4e2e-bc8f-3250def6fe1d",
       "name": "Penne Arrabbiata",
       "description": "Spicy tomato sauce with garlic and chili",
       "base_price": 750,
       "available": true,
       "sort_order": 5,
-      "created_at": "2026-09-01T16:43:26.346Z",
-      "updated_at": "2026-09-01T16:43:26.346Z"
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
     },
     {
-      "id": "9de077a8-c833-417d-8264-a9273febf90b",
-      "restaurant_id": "63bfac41-2105-4d9c-833d-2987d739c0aa",
-      "category_id": "4d07c7e6-58c3-4ae5-aa89-9f5b948b9781",
+      "id": "32ee0c9c-57ae-488d-b04a-a28d75e7ab1d",
+      "restaurant_id": "a30fb233-41a2-4dfa-a715-b600897b08e1",
+      "category_id": "c888847a-7f64-4789-9ca7-731a8d296771",
       "name": "Garlic Bread",
       "description": "Toasted bread with garlic butter and herbs",
       "base_price": 350,
       "available": true,
       "sort_order": 6,
-      "created_at": "2026-09-01T16:43:26.346Z",
-      "updated_at": "2026-09-01T16:43:26.346Z"
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
     },
     {
-      "id": "9e9d9698-c8a6-45db-819a-da6b6d07242f",
-      "restaurant_id": "63bfac41-2105-4d9c-833d-2987d739c0aa",
-      "category_id": "4d07c7e6-58c3-4ae5-aa89-9f5b948b9781",
+      "id": "5f65dc36-dd52-4993-ae6b-dc2aae36d769",
+      "restaurant_id": "a30fb233-41a2-4dfa-a715-b600897b08e1",
+      "category_id": "c888847a-7f64-4789-9ca7-731a8d296771",
       "name": "Caesar Salad",
       "description": "Romaine lettuce, croutons, parmesan, caesar dressing",
       "base_price": 550,
       "available": true,
       "sort_order": 7,
-      "created_at": "2026-09-01T16:43:26.346Z",
-      "updated_at": "2026-09-01T16:43:26.346Z"
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
     },
     {
-      "id": "7b8abb5e-fce6-4070-9042-def8c5f1b6f7",
-      "restaurant_id": "63bfac41-2105-4d9c-833d-2987d739c0aa",
-      "category_id": "9eb699ff-d4a6-4e3b-9ddf-856aff255671",
+      "id": "bb365899-83ad-44fc-93e1-4befbd12461d",
+      "restaurant_id": "a30fb233-41a2-4dfa-a715-b600897b08e1",
+      "category_id": "7dbc0a2a-0aaa-4da7-a6ca-80ed51124404",
       "name": "Iced Coffee",
       "description": "Cold brew with milk and ice",
       "base_price": 400,
       "available": true,
       "sort_order": 8,
-      "created_at": "2026-09-01T16:43:26.346Z",
-      "updated_at": "2026-09-01T16:43:26.346Z"
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
     },
     {
-      "id": "d4472477-6439-435b-a49d-6205803ad223",
-      "restaurant_id": "63bfac41-2105-4d9c-833d-2987d739c0aa",
-      "category_id": "9eb699ff-d4a6-4e3b-9ddf-856aff255671",
+      "id": "b1392d89-92c1-47fb-af3f-6a5a84b548aa",
+      "restaurant_id": "a30fb233-41a2-4dfa-a715-b600897b08e1",
+      "category_id": "7dbc0a2a-0aaa-4da7-a6ca-80ed51124404",
       "name": "Fresh Juice",
       "description": "Seasonal fresh fruit juice",
       "base_price": 350,
       "available": true,
       "sort_order": 9,
-      "created_at": "2026-09-01T16:43:26.346Z",
-      "updated_at": "2026-09-01T16:43:26.346Z"
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
+    },
+    {
+      "id": "6ce55f08-8aaf-41d3-87bb-02402b9602c8",
+      "restaurant_id": "e803fea9-e988-402f-94e0-fa8bce615a26",
+      "category_id": "5bb3ae97-16dc-4ce1-9727-c43bc82db8d7",
+      "name": "Steak Burger",
+      "description": "Juicy tender steak patty with caramelized onions, cheddar cheese and signature sauces",
+      "base_price": 500,
+      "original_price": 600,
+      "image": "https://images.unsplash.com/photo-1586190848861-99aa4a171e90?w=600&auto=format&fit=crop&q=80",
+      "available": true,
+      "sort_order": 1,
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
+    },
+    {
+      "id": "1a7a84c8-3ac1-44d5-8e31-aa101ef1868b",
+      "restaurant_id": "e803fea9-e988-402f-94e0-fa8bce615a26",
+      "category_id": "5bb3ae97-16dc-4ce1-9727-c43bc82db8d7",
+      "name": "Crunch Burger",
+      "description": "Extra crispy golden fried chicken fillet topped with fresh iceberg and spicy mayo",
+      "base_price": 399,
+      "original_price": 500,
+      "image": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&auto=format&fit=crop&q=80",
+      "available": true,
+      "sort_order": 2,
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
+    },
+    {
+      "id": "49b69716-61bf-4eee-9034-936590ef18df",
+      "restaurant_id": "e803fea9-e988-402f-94e0-fa8bce615a26",
+      "category_id": "5bb3ae97-16dc-4ce1-9727-c43bc82db8d7",
+      "name": "Mexican Sandwich",
+      "description": "Spicy Mexican grilled chicken strips loaded in toasted artisan bread with jalapenos",
+      "base_price": 499,
+      "original_price": 599,
+      "image": "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=600&auto=format&fit=crop&q=80",
+      "available": true,
+      "sort_order": 3,
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
+    },
+    {
+      "id": "edf3edef-6a88-4bcb-89eb-b4dc4e9bc2a8",
+      "restaurant_id": "e803fea9-e988-402f-94e0-fa8bce615a26",
+      "category_id": "5bb3ae97-16dc-4ce1-9727-c43bc82db8d7",
+      "name": "Club Sandwiches",
+      "description": "Classic triple layer club sandwich with shredded chicken, boiled egg, cheese and salad",
+      "base_price": 450,
+      "original_price": 550,
+      "image": "https://images.unsplash.com/photo-1553909489-cd47e0907980?w=600&auto=format&fit=crop&q=80",
+      "available": true,
+      "sort_order": 4,
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
+    },
+    {
+      "id": "b5ed7734-6a35-459b-bfcd-6053de5d8e38",
+      "restaurant_id": "e803fea9-e988-402f-94e0-fa8bce615a26",
+      "category_id": "5bb3ae97-16dc-4ce1-9727-c43bc82db8d7",
+      "name": "BBQ Club Sandwiches",
+      "description": "Smokey BBQ shredded chicken club sandwich served with french fries and garlic mayo",
+      "base_price": 399,
+      "original_price": 500,
+      "image": "https://images.unsplash.com/photo-1509722747041-616f39b57569?w=600&auto=format&fit=crop&q=80",
+      "available": true,
+      "sort_order": 5,
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
+    },
+    {
+      "id": "6306f986-11d8-40f3-9936-01f5b9c15f78",
+      "restaurant_id": "e803fea9-e988-402f-94e0-fa8bce615a26",
+      "category_id": "8e2a66aa-98a8-49b3-a423-5a4f83f9c1a1",
+      "name": "Plain Broast",
+      "description": "Quarter crispy golden fried broast served with french fries, garlic sauce and dinner roll",
+      "base_price": 450,
+      "original_price": 550,
+      "image": "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=600&auto=format&fit=crop&q=80",
+      "available": true,
+      "sort_order": 6,
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
+    },
+    {
+      "id": "7b7843bd-f0bc-4340-9f7b-63ccce055ff8",
+      "restaurant_id": "e803fea9-e988-402f-94e0-fa8bce615a26",
+      "category_id": "8e2a66aa-98a8-49b3-a423-5a4f83f9c1a1",
+      "name": "Injected Broast",
+      "description": "Special secret spiced sauce injected deep into the chicken meat for explosive tenderness and flavor",
+      "base_price": 599,
+      "original_price": 700,
+      "image": "https://images.unsplash.com/photo-1562967914-608f82629710?w=600&auto=format&fit=crop&q=80",
+      "available": true,
+      "sort_order": 7,
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
+    },
+    {
+      "id": "ccf273ab-f29b-4550-a16a-3dddeeafefd1",
+      "restaurant_id": "e803fea9-e988-402f-94e0-fa8bce615a26",
+      "category_id": "8e2a66aa-98a8-49b3-a423-5a4f83f9c1a1",
+      "name": "Spicy Masala Broast",
+      "description": "Quarter crispy broast generously tossed in hot peri-peri style aromatic red masala",
+      "base_price": 450,
+      "original_price": 550,
+      "image": "https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?w=600&auto=format&fit=crop&q=80",
+      "available": true,
+      "sort_order": 8,
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
+    },
+    {
+      "id": "a6e71562-c19b-41a0-9371-9b31b368c06f",
+      "restaurant_id": "e803fea9-e988-402f-94e0-fa8bce615a26",
+      "category_id": "e8a95e58-7ee2-468a-84f0-889c31d1aaa1",
+      "name": "Pizza Tikka",
+      "description": "Topped with spicy marinated chicken tikka chunks, onions, green peppers and melted mozzarella cheese",
+      "base_price": 500,
+      "original_price": 650,
+      "image": "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=600&auto=format&fit=crop&q=80",
+      "available": true,
+      "sort_order": 9,
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
+    },
+    {
+      "id": "53789e92-b746-46d4-98f0-9ec37cdd8449",
+      "restaurant_id": "e803fea9-e988-402f-94e0-fa8bce615a26",
+      "category_id": "e8a95e58-7ee2-468a-84f0-889c31d1aaa1",
+      "name": "Pizza Fajita",
+      "description": "Smokey chicken fajita chunks, capsicum, olives, mushrooms and generous mozzarella cheese layer",
+      "base_price": 550,
+      "original_price": 700,
+      "image": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&auto=format&fit=crop&q=80",
+      "available": true,
+      "sort_order": 10,
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
+    },
+    {
+      "id": "e3727013-2dee-4d48-a179-3638402f1acd",
+      "restaurant_id": "e803fea9-e988-402f-94e0-fa8bce615a26",
+      "category_id": "4b3ecf0a-087a-41cd-8ecc-965c5a45d7f0",
+      "name": "Loaded Fries",
+      "description": "Crispy french fries loaded with cheddar cheese sauce, chicken chunks and sliced jalapenos",
+      "base_price": 350,
+      "original_price": 450,
+      "image": "https://images.unsplash.com/photo-1585109649139-366815a0d713?w=600&auto=format&fit=crop&q=80",
+      "available": true,
+      "sort_order": 11,
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
+    },
+    {
+      "id": "ce08036d-4e22-42eb-b37d-3fa5e5eb2ca6",
+      "restaurant_id": "e803fea9-e988-402f-94e0-fa8bce615a26",
+      "category_id": "4b3ecf0a-087a-41cd-8ecc-965c5a45d7f0",
+      "name": "Coca Cola / Soft Drinks",
+      "description": "Chilled refreshing soft drinks",
+      "base_price": 120,
+      "original_price": 140,
+      "image": "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=600&auto=format&fit=crop&q=80",
+      "available": true,
+      "sort_order": 12,
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
     }
   ],
   "item_variants": [
     {
-      "id": "d540fbfb-4a30-421b-97c4-c078a079525d",
-      "item_id": "4e59928b-2873-479c-9af1-66d8e1435773",
+      "id": "22b36fcf-b411-47dd-84ef-d023029a201c",
+      "item_id": "41c402ce-8889-4f30-b4f1-ce49b5761627",
       "name": "Half",
       "price": 850,
       "status": "active"
     },
     {
-      "id": "3fae203a-ce00-4661-991e-1cffb8aba8de",
-      "item_id": "4e59928b-2873-479c-9af1-66d8e1435773",
+      "id": "4fef52fd-94d0-4ef4-b7ad-0f70d4bc8969",
+      "item_id": "41c402ce-8889-4f30-b4f1-ce49b5761627",
       "name": "Full",
       "price": 1600,
       "status": "active"
     },
     {
-      "id": "41779ebc-badb-48c4-9849-c9d47f4b6162",
-      "item_id": "1b5d7137-7cfc-4bbb-8062-0b6010c831af",
+      "id": "5f8d2fe9-e145-42cc-9947-c9782012ad7c",
+      "item_id": "34107604-150f-4de9-8106-2ba52624c3a4",
       "name": "Half",
       "price": 1200,
       "status": "active"
     },
     {
-      "id": "39a4c4d1-5956-465d-bd76-40d9f3295ffc",
-      "item_id": "1b5d7137-7cfc-4bbb-8062-0b6010c831af",
+      "id": "419e5a7c-d1a6-431a-8ce6-c53b9e1cc0dd",
+      "item_id": "34107604-150f-4de9-8106-2ba52624c3a4",
       "name": "Full",
       "price": 2200,
       "status": "active"
     },
     {
-      "id": "87b7e3e1-4421-4ffd-9dff-b7faa73647ca",
-      "item_id": "c53604b8-9bb1-4d54-83fa-ccb2857a8ff1",
+      "id": "df2a5871-2c88-4455-840f-a59cfa5ef25b",
+      "item_id": "172bb0c4-9d55-4c18-bd33-90deb0d536f7",
       "name": "Half",
       "price": 950,
       "status": "active"
     },
     {
-      "id": "949ece0d-bac2-4e8d-84bc-3db8df4c018c",
-      "item_id": "c53604b8-9bb1-4d54-83fa-ccb2857a8ff1",
+      "id": "b5c8060f-cee9-4388-8434-beebdd07c78c",
+      "item_id": "172bb0c4-9d55-4c18-bd33-90deb0d536f7",
       "name": "Full",
       "price": 1800,
       "status": "active"
     },
     {
-      "id": "e323a00b-4f7b-4b2c-a4df-49693f08e1ea",
-      "item_id": "156da1c8-049c-4ad0-8579-47503221d2dc",
+      "id": "832bfb87-357d-4882-8e91-5c2302b2cb93",
+      "item_id": "2ce16dc9-68a5-4898-b65b-fc92a4139d3c",
       "name": "Half",
       "price": 1400,
       "status": "active"
     },
     {
-      "id": "a2dafe4f-6066-485a-b623-50c5f9db4706",
-      "item_id": "156da1c8-049c-4ad0-8579-47503221d2dc",
+      "id": "8d3ea133-c461-4b26-a143-34ba85d29a82",
+      "item_id": "2ce16dc9-68a5-4898-b65b-fc92a4139d3c",
       "name": "Full",
       "price": 2600,
       "status": "active"
     },
     {
-      "id": "7a073cb7-f573-48cc-bda3-bea6d81d0b6b",
-      "item_id": "d325fed7-8abe-4fbd-bda3-af8c5eadc93c",
+      "id": "09563046-0b84-4b93-b144-a2ed393c3207",
+      "item_id": "0ebe0697-d2a8-450e-a2f6-ea18c4974761",
       "name": "4 Pcs",
       "price": 500,
       "status": "active"
     },
     {
-      "id": "b08fef83-517c-4f42-8c73-53b37c9c4ad8",
-      "item_id": "d325fed7-8abe-4fbd-bda3-af8c5eadc93c",
+      "id": "cfc9a33e-baf4-417d-ba94-4d1da63291dd",
+      "item_id": "0ebe0697-d2a8-450e-a2f6-ea18c4974761",
       "name": "8 Pcs",
       "price": 950,
       "status": "active"
     },
     {
-      "id": "61da1426-9f0f-4c06-9e75-262a4d9feb13",
-      "item_id": "fe523918-f61a-4b23-bf8d-f6a859bb16d9",
+      "id": "84436ae8-f49d-4e6a-bf61-11c3ec665fa5",
+      "item_id": "11b07d5c-948a-4e1d-8389-6ccf9065cf02",
       "name": "Single",
       "price": 450,
       "status": "active"
     },
     {
-      "id": "d48aece1-b778-43e4-91ad-06555ac3bf3f",
-      "item_id": "fe523918-f61a-4b23-bf8d-f6a859bb16d9",
+      "id": "54a20ff9-26cd-4262-b9b7-ff4a3a883515",
+      "item_id": "11b07d5c-948a-4e1d-8389-6ccf9065cf02",
       "name": "Family",
       "price": 1600,
       "status": "active"
     },
     {
-      "id": "323575eb-1b5c-4e2e-8c17-f54f885abb26",
-      "item_id": "dbb42559-9de1-42c5-80c2-829d32b135e8",
+      "id": "76ab975e-d48d-4a6c-87eb-52c0d337e8ac",
+      "item_id": "0fe1d68c-d95a-4c1d-8e09-965b4f4a8c05",
       "name": "Single",
       "price": 550,
       "status": "active"
     },
     {
-      "id": "85e41c29-cd28-4b26-aa4c-16c5587fed8c",
-      "item_id": "dbb42559-9de1-42c5-80c2-829d32b135e8",
+      "id": "dfc3912d-8c52-4861-99de-3219fa5d1eea",
+      "item_id": "0fe1d68c-d95a-4c1d-8e09-965b4f4a8c05",
       "name": "Family",
       "price": 1900,
       "status": "active"
     },
     {
-      "id": "95080977-a038-4f51-b45a-f16d1fb99b41",
-      "item_id": "26d7612a-285f-45a1-b7a3-3b242fc9f8b0",
+      "id": "643444a6-3e32-4ef5-a8b6-2cb2bd4ada9b",
+      "item_id": "5dbae0d3-b870-4367-8964-1c8ad1987316",
       "name": "Regular",
       "price": 120,
       "status": "active"
     },
     {
-      "id": "e26e6b3e-aa36-4484-bb12-90517ca3258a",
-      "item_id": "26d7612a-285f-45a1-b7a3-3b242fc9f8b0",
+      "id": "860c73b1-4072-4add-9a7d-892c11b82e6a",
+      "item_id": "5dbae0d3-b870-4367-8964-1c8ad1987316",
       "name": "Large",
       "price": 200,
       "status": "active"
     },
     {
-      "id": "cf59cf36-93cd-4680-99a5-bff691ace638",
-      "item_id": "09024c79-39d4-47de-9943-6e95aa436f6a",
+      "id": "17209ba7-91ce-41bc-90cd-42cfa84c7464",
+      "item_id": "175683d6-6e15-4a13-be52-34beb14402d4",
       "name": "Sweet",
       "price": 180,
       "status": "active"
     },
     {
-      "id": "84d7f156-692d-4e60-8590-5a3bf1d2aebd",
-      "item_id": "09024c79-39d4-47de-9943-6e95aa436f6a",
+      "id": "4a56f387-0133-4edc-a6a3-66174660f9d3",
+      "item_id": "175683d6-6e15-4a13-be52-34beb14402d4",
       "name": "Salted",
       "price": 180,
       "status": "active"
     },
     {
-      "id": "b8f83278-b6fd-4d1f-be4c-99fba7aef630",
-      "item_id": "c7c283fc-57ca-4195-b298-2cd5c6a1b897",
+      "id": "82a6c23d-a119-459a-ad3e-c4b3ead19b29",
+      "item_id": "e6206b64-a87b-4dfd-8154-05fe7c35154a",
       "name": "2 Pcs",
       "price": 200,
       "status": "active"
     },
     {
-      "id": "8e4c5cc3-115f-4c90-961f-3b7378df46d5",
-      "item_id": "c7c283fc-57ca-4195-b298-2cd5c6a1b897",
+      "id": "860b337c-69d9-4a35-bf5e-704d74ae3de9",
+      "item_id": "e6206b64-a87b-4dfd-8154-05fe7c35154a",
       "name": "4 Pcs",
       "price": 380,
       "status": "active"
     },
     {
-      "id": "39614835-d09f-46ef-bc24-0f087de473ac",
-      "item_id": "d72524ae-65ce-4e21-8890-e78f1030131f",
+      "id": "bf33d20e-44d5-4416-9d37-fe63936c189d",
+      "item_id": "ee2a11c8-660c-4179-9410-3f82eeb32c0b",
       "name": "Small 8\"",
       "price": 950,
       "status": "active"
     },
     {
-      "id": "be832582-9e0b-4d37-b1d2-b5fe8d935ce5",
-      "item_id": "d72524ae-65ce-4e21-8890-e78f1030131f",
+      "id": "1d2bd931-3d2a-43a4-b9b7-a8f6eb80176d",
+      "item_id": "ee2a11c8-660c-4179-9410-3f82eeb32c0b",
       "name": "Medium 12\"",
       "price": 1400,
       "status": "active"
     },
     {
-      "id": "417e4466-953e-489c-98fc-7e3943525787",
-      "item_id": "d72524ae-65ce-4e21-8890-e78f1030131f",
+      "id": "5bc92709-ed2c-41f5-92c9-39a005cc355b",
+      "item_id": "ee2a11c8-660c-4179-9410-3f82eeb32c0b",
       "name": "Large 16\"",
       "price": 1900,
       "status": "active"
     },
     {
-      "id": "b98eb429-9650-47ed-8b48-c2901023aa45",
-      "item_id": "245ef35c-80d1-4af6-85ae-1f4acabd87d7",
+      "id": "3d859298-0279-486c-8920-c062bf6d3b05",
+      "item_id": "28a8c0ac-60a6-4767-a733-ed4581ffe842",
       "name": "Small 8\"",
       "price": 1100,
       "status": "active"
     },
     {
-      "id": "a77b97a3-693b-429f-881e-57a86abdf192",
-      "item_id": "245ef35c-80d1-4af6-85ae-1f4acabd87d7",
+      "id": "e9b143a5-30e2-4a82-b5a2-dda18fd1e492",
+      "item_id": "28a8c0ac-60a6-4767-a733-ed4581ffe842",
       "name": "Medium 12\"",
       "price": 1600,
       "status": "active"
     },
     {
-      "id": "c446ad90-12cd-40fa-a322-4fcbdc03379f",
-      "item_id": "245ef35c-80d1-4af6-85ae-1f4acabd87d7",
+      "id": "a30e43b5-ee26-43f1-a542-c1c12c5c354b",
+      "item_id": "28a8c0ac-60a6-4767-a733-ed4581ffe842",
       "name": "Large 16\"",
       "price": 2200,
       "status": "active"
     },
     {
-      "id": "cb7fc11c-4b91-40f7-823f-4a08186ea130",
-      "item_id": "7974e187-19bc-441e-9a5e-72e264ab7538",
+      "id": "f686932a-231c-499a-8e52-cd3c84736f28",
+      "item_id": "b753bc14-2c1c-4e23-b215-ea5c57f70399",
       "name": "Small 8\"",
       "price": 1200,
       "status": "active"
     },
     {
-      "id": "c17cd4b9-84f5-4ed3-be01-c745ca1d9557",
-      "item_id": "7974e187-19bc-441e-9a5e-72e264ab7538",
+      "id": "502c893b-0c85-4654-a2b7-6637b55fca97",
+      "item_id": "b753bc14-2c1c-4e23-b215-ea5c57f70399",
       "name": "Medium 12\"",
       "price": 1700,
       "status": "active"
     },
     {
-      "id": "77a96841-df5e-4348-a713-ae91e7a3b0d8",
-      "item_id": "7974e187-19bc-441e-9a5e-72e264ab7538",
+      "id": "4dee2f7b-ce3c-4b36-92e3-871dcf4d4ef5",
+      "item_id": "b753bc14-2c1c-4e23-b215-ea5c57f70399",
       "name": "Large 16\"",
       "price": 2400,
       "status": "active"
     },
     {
-      "id": "bb864d70-5836-41d4-92c9-8903f75191cb",
-      "item_id": "d4472477-6439-435b-a49d-6205803ad223",
+      "id": "988407af-282b-4868-a28c-3ee430af85b7",
+      "item_id": "b1392d89-92c1-47fb-af3f-6a5a84b548aa",
       "name": "Orange",
       "price": 350,
       "status": "active"
     },
     {
-      "id": "b7c9ff71-4e21-44f3-aa44-6298420fb8e7",
-      "item_id": "d4472477-6439-435b-a49d-6205803ad223",
+      "id": "c757a669-c21f-4e64-bb35-484dbbfdd47e",
+      "item_id": "b1392d89-92c1-47fb-af3f-6a5a84b548aa",
       "name": "Mango",
       "price": 400,
+      "status": "active"
+    },
+    {
+      "id": "1ef7b40e-c421-4463-8ec1-cce3554b6d81",
+      "item_id": "6ce55f08-8aaf-41d3-87bb-02402b9602c8",
+      "name": "Single Patty",
+      "price": 500,
+      "status": "active"
+    },
+    {
+      "id": "21454639-a761-4f86-88e0-423ac0ce81b7",
+      "item_id": "6ce55f08-8aaf-41d3-87bb-02402b9602c8",
+      "name": "Double Patty",
+      "price": 750,
+      "status": "active"
+    },
+    {
+      "id": "b1a0fc41-60bd-4431-ad1f-187e6958be35",
+      "item_id": "1a7a84c8-3ac1-44d5-8e31-aa101ef1868b",
+      "name": "Classic Regular",
+      "price": 399,
+      "status": "active"
+    },
+    {
+      "id": "2130c84d-333d-4af8-bce0-6dfe04dcc998",
+      "item_id": "1a7a84c8-3ac1-44d5-8e31-aa101ef1868b",
+      "name": "Spicy Zinger",
+      "price": 449,
+      "status": "active"
+    },
+    {
+      "id": "6063d49d-1ed4-4a66-94b2-1931f8091175",
+      "item_id": "6306f986-11d8-40f3-9936-01f5b9c15f78",
+      "name": "Quarter (1 Pc)",
+      "price": 450,
+      "status": "active"
+    },
+    {
+      "id": "61383845-773c-4ca6-a503-1058638c4b7e",
+      "item_id": "6306f986-11d8-40f3-9936-01f5b9c15f78",
+      "name": "Half (2 Pcs)",
+      "price": 850,
+      "status": "active"
+    },
+    {
+      "id": "13e6248f-1fee-4556-a0e1-9e66f9e148e5",
+      "item_id": "7b7843bd-f0bc-4340-9f7b-63ccce055ff8",
+      "name": "Quarter (1 Pc)",
+      "price": 599,
+      "status": "active"
+    },
+    {
+      "id": "6861b0ed-15e1-4f0f-b04b-92d45fd11d76",
+      "item_id": "7b7843bd-f0bc-4340-9f7b-63ccce055ff8",
+      "name": "Half (2 Pcs)",
+      "price": 1100,
+      "status": "active"
+    },
+    {
+      "id": "a504f0ef-bcfa-41d8-a95b-c6c1a7dcf821",
+      "item_id": "ccf273ab-f29b-4550-a16a-3dddeeafefd1",
+      "name": "Quarter (1 Pc)",
+      "price": 450,
+      "status": "active"
+    },
+    {
+      "id": "c16a77b5-7cc3-4bf3-b02e-2370cc293192",
+      "item_id": "ccf273ab-f29b-4550-a16a-3dddeeafefd1",
+      "name": "Half (2 Pcs)",
+      "price": 850,
+      "status": "active"
+    },
+    {
+      "id": "6b77e07b-3bbe-448f-8a8a-c07f00d431ba",
+      "item_id": "a6e71562-c19b-41a0-9371-9b31b368c06f",
+      "name": "Small 8\"",
+      "price": 500,
+      "status": "active"
+    },
+    {
+      "id": "f3ba3c1f-9d67-4a74-9bdf-7fa42724e2c3",
+      "item_id": "a6e71562-c19b-41a0-9371-9b31b368c06f",
+      "name": "Medium 10\"",
+      "price": 950,
+      "status": "active"
+    },
+    {
+      "id": "d2a8502a-eb65-40ad-8cd3-aef871163849",
+      "item_id": "a6e71562-c19b-41a0-9371-9b31b368c06f",
+      "name": "Large 13\"",
+      "price": 1450,
+      "status": "active"
+    },
+    {
+      "id": "be998f99-6e1d-411a-99a8-5149f2eac081",
+      "item_id": "53789e92-b746-46d4-98f0-9ec37cdd8449",
+      "name": "Small 8\"",
+      "price": 550,
+      "status": "active"
+    },
+    {
+      "id": "5ce4314e-0c0a-472c-8327-c0b1e0c05fd0",
+      "item_id": "53789e92-b746-46d4-98f0-9ec37cdd8449",
+      "name": "Medium 10\"",
+      "price": 1050,
+      "status": "active"
+    },
+    {
+      "id": "541a5bd1-f8d1-4f66-bdc0-1b7766f21750",
+      "item_id": "53789e92-b746-46d4-98f0-9ec37cdd8449",
+      "name": "Large 13\"",
+      "price": 1550,
+      "status": "active"
+    },
+    {
+      "id": "bc1d2d81-37ef-424a-8447-7fda22f8bf44",
+      "item_id": "ce08036d-4e22-42eb-b37d-3fa5e5eb2ca6",
+      "name": "Regular 500ml",
+      "price": 120,
+      "status": "active"
+    },
+    {
+      "id": "af0d3ea1-8d73-4577-b3e3-2e71eeaeac5f",
+      "item_id": "ce08036d-4e22-42eb-b37d-3fa5e5eb2ca6",
+      "name": "Large 1.5L",
+      "price": 250,
       "status": "active"
     }
   ],
   "tables": [
     {
-      "id": "390fee69-4b3e-41e0-9f60-5dd778d40975",
-      "restaurant_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
+      "id": "c98f12da-d68f-4dd7-9bb2-d64e9af1587d",
+      "restaurant_id": "2cf7cad9-3568-434c-a6e3-33f05f708002",
       "table_number": 1,
-      "qr_token": "9f7b0ec8-a8d9-4bb2-8446-48187547a959",
+      "qr_token": "ac872620-b68c-460b-919a-353511bbb431",
       "status": "active",
-      "created_at": "2026-09-01T16:43:26.346Z",
-      "updated_at": "2026-09-01T16:43:26.346Z"
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
     },
     {
-      "id": "5c46e0bc-2d6c-4388-841c-f47f62217a94",
-      "restaurant_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
+      "id": "d2bc1dcb-5c1b-4d66-afcb-8adf92f570f6",
+      "restaurant_id": "2cf7cad9-3568-434c-a6e3-33f05f708002",
       "table_number": 2,
-      "qr_token": "807294ba-0749-417e-b654-1ad001662579",
+      "qr_token": "8a08fda2-86d7-454e-bcb8-b103346eef8f",
       "status": "active",
-      "created_at": "2026-09-01T16:43:26.346Z",
-      "updated_at": "2026-09-01T16:43:26.346Z"
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
     },
     {
-      "id": "e5dbb65f-b33c-4532-90d4-24ae16ddfa98",
-      "restaurant_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
+      "id": "08c36b14-7432-429f-8448-e440e519694c",
+      "restaurant_id": "2cf7cad9-3568-434c-a6e3-33f05f708002",
       "table_number": 3,
-      "qr_token": "3fea33d8-2367-42e2-89f4-90f022229e79",
+      "qr_token": "83ce008a-0bc4-4109-b788-360840d23972",
       "status": "active",
-      "created_at": "2026-09-01T16:43:26.346Z",
-      "updated_at": "2026-09-01T16:43:26.346Z"
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
     },
     {
-      "id": "029dda92-f569-4e0f-aa60-b8fc1f04e320",
-      "restaurant_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
+      "id": "5a352300-cdc1-4cf7-9f6e-9405bb8343ba",
+      "restaurant_id": "2cf7cad9-3568-434c-a6e3-33f05f708002",
       "table_number": 4,
-      "qr_token": "efd1a9b3-d2e9-4c3f-813f-fe8b5d115f09",
+      "qr_token": "8d154300-beb0-4521-a5eb-e161fb096a1c",
       "status": "active",
-      "created_at": "2026-09-01T16:43:26.346Z",
-      "updated_at": "2026-09-01T16:43:26.346Z"
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
     },
     {
-      "id": "7046e785-5a92-468c-84ae-4b63db711e45",
-      "restaurant_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
+      "id": "9141c803-a720-4573-8d14-46b1afc7aa31",
+      "restaurant_id": "2cf7cad9-3568-434c-a6e3-33f05f708002",
       "table_number": 5,
-      "qr_token": "609443b2-6ebf-4d30-82a4-26c2f1f0642d",
+      "qr_token": "5cf6081e-0803-49e5-9667-923b82c87855",
       "status": "active",
-      "created_at": "2026-09-01T16:43:26.346Z",
-      "updated_at": "2026-09-01T16:43:26.346Z"
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
     },
     {
-      "id": "1a7c5afc-bd24-41c9-afe3-1b974a5e4e99",
-      "restaurant_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
+      "id": "c416e5b4-dd98-42cd-8388-f9bc1f2eb7a3",
+      "restaurant_id": "2cf7cad9-3568-434c-a6e3-33f05f708002",
       "table_number": 6,
-      "qr_token": "ca40f43e-7948-4a94-979e-b825f85c79d9",
+      "qr_token": "8d59fe19-afef-4ada-bf9d-1505f6ad5d57",
       "status": "active",
-      "created_at": "2026-09-01T16:43:26.346Z",
-      "updated_at": "2026-09-01T16:43:26.346Z"
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
     },
     {
-      "id": "766ca5c8-1a80-4d99-b296-a49d48d53a16",
-      "restaurant_id": "63bfac41-2105-4d9c-833d-2987d739c0aa",
+      "id": "8e2a97e8-9bcb-4252-ab2b-b9ad22501e82",
+      "restaurant_id": "a30fb233-41a2-4dfa-a715-b600897b08e1",
       "table_number": 1,
-      "qr_token": "f9197732-5c51-4ac2-b9de-2268de514c66",
+      "qr_token": "b5c680b9-bd1a-488c-97a6-678a3ef41ee3",
       "status": "active",
-      "created_at": "2026-09-01T16:43:26.346Z",
-      "updated_at": "2026-09-01T16:43:26.346Z"
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
     },
     {
-      "id": "aea31867-7f5c-4e3c-82c5-b93e9fe1e3e5",
-      "restaurant_id": "63bfac41-2105-4d9c-833d-2987d739c0aa",
+      "id": "444e27db-cca6-4fba-9145-a1e8299406b8",
+      "restaurant_id": "a30fb233-41a2-4dfa-a715-b600897b08e1",
       "table_number": 2,
-      "qr_token": "78603561-f0f5-4ea5-8781-2c7f56738949",
+      "qr_token": "53001197-b529-450b-b09b-961a82624273",
       "status": "active",
-      "created_at": "2026-09-01T16:43:26.346Z",
-      "updated_at": "2026-09-01T16:43:26.346Z"
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
     },
     {
-      "id": "9575a64b-ab2f-463e-874b-2a38eaf3ffa6",
-      "restaurant_id": "63bfac41-2105-4d9c-833d-2987d739c0aa",
+      "id": "a4d33cc3-12c4-4d83-a19c-c5f35c9d0f36",
+      "restaurant_id": "a30fb233-41a2-4dfa-a715-b600897b08e1",
       "table_number": 3,
-      "qr_token": "26f40357-86da-4aec-8a38-769d217381b5",
+      "qr_token": "3fe6d708-e6ae-45e7-85d4-215ca83adbd6",
       "status": "active",
-      "created_at": "2026-09-01T16:43:26.346Z",
-      "updated_at": "2026-09-01T16:43:26.346Z"
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
     },
     {
-      "id": "bdbd8f54-7e76-4054-b86b-09d94e413ca0",
-      "restaurant_id": "63bfac41-2105-4d9c-833d-2987d739c0aa",
+      "id": "bc05d80d-e40e-41c4-94db-882026314931",
+      "restaurant_id": "a30fb233-41a2-4dfa-a715-b600897b08e1",
       "table_number": 4,
-      "qr_token": "dcdd7940-982c-4b9a-bdcd-40c217aeaa27",
+      "qr_token": "c1335274-d08d-4921-9a60-a8170c9fec7e",
       "status": "active",
-      "created_at": "2026-09-01T16:43:26.346Z",
-      "updated_at": "2026-09-01T16:43:26.346Z"
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
+    },
+    {
+      "id": "99db37d2-e6bc-4c23-bed5-209210942172",
+      "restaurant_id": "e803fea9-e988-402f-94e0-fa8bce615a26",
+      "table_number": 1,
+      "qr_token": "26151010-b084-4ac4-b485-45f30180b52e",
+      "status": "active",
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
+    },
+    {
+      "id": "3c950da6-53f5-46e3-9c97-7d02c2401e59",
+      "restaurant_id": "e803fea9-e988-402f-94e0-fa8bce615a26",
+      "table_number": 2,
+      "qr_token": "a5602f7b-b343-475b-965a-eebd89c713b7",
+      "status": "active",
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
+    },
+    {
+      "id": "db7b21e8-380a-4b72-952d-38fa63e17404",
+      "restaurant_id": "e803fea9-e988-402f-94e0-fa8bce615a26",
+      "table_number": 3,
+      "qr_token": "f2a03e16-2ad4-4ea8-9add-1ad11358a8dd",
+      "status": "active",
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
+    },
+    {
+      "id": "248c34b0-23c6-4cf5-b0ab-766612ece612",
+      "restaurant_id": "e803fea9-e988-402f-94e0-fa8bce615a26",
+      "table_number": 4,
+      "qr_token": "5f5082dd-85ea-4ba6-8341-d588fd300f18",
+      "status": "active",
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
+    },
+    {
+      "id": "552a7763-e709-400c-b08c-cccfbe26d304",
+      "restaurant_id": "e803fea9-e988-402f-94e0-fa8bce615a26",
+      "table_number": 5,
+      "qr_token": "eb20cba2-674e-43d0-82e3-6c4bc68ca798",
+      "status": "active",
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
+    },
+    {
+      "id": "94375fab-7259-43c0-a302-1a364b8b4fc3",
+      "restaurant_id": "e803fea9-e988-402f-94e0-fa8bce615a26",
+      "table_number": 6,
+      "qr_token": "36ca38c5-8a61-4015-8d21-0ad641a33af8",
+      "status": "active",
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
+    },
+    {
+      "id": "0aba30dc-b3e1-414f-9522-db422c6171e0",
+      "restaurant_id": "e803fea9-e988-402f-94e0-fa8bce615a26",
+      "table_number": 7,
+      "qr_token": "6693cc25-9668-4ed2-9738-60e1cccf124c",
+      "status": "active",
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
+    },
+    {
+      "id": "b34f4503-7542-4c1a-b0a6-6f8e4f113047",
+      "restaurant_id": "e803fea9-e988-402f-94e0-fa8bce615a26",
+      "table_number": 8,
+      "qr_token": "57817b4f-7c9f-43ff-8a4f-9da9b68f6384",
+      "status": "active",
+      "created_at": "2026-09-14T17:37:49.296Z",
+      "updated_at": "2026-09-14T17:37:49.296Z"
     }
   ],
   "table_sessions": [
     {
-      "id": "2a3cdf97-62a4-428c-af20-026ee5dddf11",
-      "restaurant_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
-      "table_id": "e5dbb65f-b33c-4532-90d4-24ae16ddfa98",
-      "session_token": "0f7b4a6d-f64c-4a57-b9a2-bf05213c516c",
-      "status": "closed",
-      "started_at": "2026-09-01T16:43:26.346Z",
-      "closed_at": "2026-09-01T18:33:22.417Z",
-      "updated_at": "2026-09-01T18:33:22.417Z"
-    },
-    {
-      "id": "72194d5d-be2d-4420-97c1-11024c9bf873",
-      "restaurant_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
-      "table_id": "5c46e0bc-2d6c-4388-841c-f47f62217a94",
-      "session_token": "bd8d4adb-0940-4fc5-ad3e-ff07abd354d9",
-      "status": "closed",
-      "started_at": "2026-09-01T18:32:01.773Z",
-      "closed_at": "2026-09-01T18:33:24.785Z",
-      "updated_at": "2026-09-01T18:33:24.785Z"
-    },
-    {
-      "id": "2b25a811-d17a-44b2-bc9d-abcba8294626",
-      "restaurant_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
-      "table_id": "e5dbb65f-b33c-4532-90d4-24ae16ddfa98",
-      "session_token": "eb43f13b-6b8e-4d44-91d2-bbecf423439a",
-      "status": "closed",
-      "started_at": "2026-09-01T18:34:15.425Z",
-      "closed_at": "2026-09-02T13:47:56.876Z",
-      "updated_at": "2026-09-02T13:47:56.876Z"
-    },
-    {
-      "id": "42ce648f-e8da-45c3-86a7-833baebbe453",
-      "restaurant_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
-      "table_id": "390fee69-4b3e-41e0-9f60-5dd778d40975",
-      "session_token": "f588a406-e9d4-4826-ba6d-0b21604041af",
-      "status": "closed",
-      "started_at": "2026-09-01T19:17:16.887Z",
-      "closed_at": "2026-09-01T19:17:43.145Z",
-      "updated_at": "2026-09-01T19:17:43.145Z"
-    },
-    {
-      "id": "ae7dbd0f-287f-453d-99b4-02805381876a",
-      "restaurant_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
-      "table_id": "390fee69-4b3e-41e0-9f60-5dd778d40975",
-      "session_token": "435ef8c2-1928-4729-9a97-34251904f8cd",
-      "status": "closed",
-      "started_at": "2026-09-01T19:17:45.915Z",
-      "closed_at": "2026-09-02T13:47:54.536Z",
-      "updated_at": "2026-09-02T13:47:54.536Z"
+      "id": "0c0270cb-8165-4473-978c-6beda3b08c06",
+      "restaurant_id": "2cf7cad9-3568-434c-a6e3-33f05f708002",
+      "table_id": "08c36b14-7432-429f-8448-e440e519694c",
+      "session_token": "0296880e-ff18-400e-b701-c1b3f8e7b4a6",
+      "status": "active",
+      "started_at": "2026-09-14T17:37:49.296Z"
     }
   ],
   "orders": [
     {
-      "id": "e7d07dd5-33df-49a4-b9cf-d855d85867e7",
-      "restaurant_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
-      "table_id": "e5dbb65f-b33c-4532-90d4-24ae16ddfa98",
-      "table_session_id": "2a3cdf97-62a4-428c-af20-026ee5dddf11",
+      "id": "b7b62104-7d8c-4b5a-93fe-51503d904cb6",
+      "restaurant_id": "2cf7cad9-3568-434c-a6e3-33f05f708002",
+      "table_id": "08c36b14-7432-429f-8448-e440e519694c",
+      "table_session_id": "0c0270cb-8165-4473-978c-6beda3b08c06",
       "order_number": "#1001",
       "status": "completed",
       "subtotal": 2240,
@@ -914,83 +1344,32 @@
       "total": 2352,
       "customer_name": "Ali",
       "customer_note": "Less spicy please",
-      "created_at": "2026-09-01T15:43:26.601Z",
-      "updated_at": "2026-09-01T16:13:26.601Z"
+      "created_at": "2026-09-14T16:37:50.062Z",
+      "updated_at": "2026-09-14T17:07:50.062Z"
     },
     {
-      "id": "27500f1d-9cb3-48fe-8570-47ccf62d94a7",
-      "restaurant_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
-      "table_id": "e5dbb65f-b33c-4532-90d4-24ae16ddfa98",
-      "table_session_id": "2a3cdf97-62a4-428c-af20-026ee5dddf11",
+      "id": "0449241c-84ca-4e93-a01b-c382975416ba",
+      "restaurant_id": "2cf7cad9-3568-434c-a6e3-33f05f708002",
+      "table_id": "08c36b14-7432-429f-8448-e440e519694c",
+      "table_session_id": "0c0270cb-8165-4473-978c-6beda3b08c06",
       "order_number": "#1002",
-      "status": "completed",
+      "status": "cooking",
       "subtotal": 2200,
       "tax": 110,
       "service_charge": 0,
       "discount": 0,
       "total": 2310,
       "customer_name": "Hassan",
-      "created_at": "2026-09-01T16:23:26.601Z",
-      "updated_at": "2026-09-01T18:35:31.017Z"
-    },
-    {
-      "id": "24e0b8bc-ef32-4e5f-84d7-6d7470d8dda3",
-      "restaurant_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
-      "table_id": "e5dbb65f-b33c-4532-90d4-24ae16ddfa98",
-      "table_session_id": "2b25a811-d17a-44b2-bc9d-abcba8294626",
-      "order_number": "#1001",
-      "status": "completed",
-      "subtotal": 3770,
-      "tax": 189,
-      "service_charge": 0,
-      "discount": 0,
-      "total": 3959,
-      "customer_name": "",
-      "customer_note": "",
-      "created_at": "2026-09-01T18:34:41.900Z",
-      "updated_at": "2026-09-01T18:35:32.358Z"
-    },
-    {
-      "id": "1e6e0952-cbd3-4c24-b9f0-98d11b20bf77",
-      "restaurant_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
-      "table_id": "390fee69-4b3e-41e0-9f60-5dd778d40975",
-      "table_session_id": "42ce648f-e8da-45c3-86a7-833baebbe453",
-      "order_number": "#1002",
-      "status": "cancelled",
-      "subtotal": 850,
-      "tax": 43,
-      "service_charge": 0,
-      "discount": 0,
-      "total": 893,
-      "customer_name": "",
-      "customer_note": "",
-      "created_at": "2026-09-01T19:17:24.424Z",
-      "updated_at": "2026-09-01T19:18:02.528Z"
-    },
-    {
-      "id": "e5c54914-a8ec-46eb-b147-d7f8eabef0e0",
-      "restaurant_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
-      "table_id": "390fee69-4b3e-41e0-9f60-5dd778d40975",
-      "table_session_id": "ae7dbd0f-287f-453d-99b4-02805381876a",
-      "order_number": "#1003",
-      "status": "cancelled",
-      "subtotal": 1200,
-      "tax": 60,
-      "service_charge": 0,
-      "discount": 0,
-      "total": 1260,
-      "customer_name": "",
-      "customer_note": "",
-      "created_at": "2026-09-01T19:17:51.502Z",
-      "updated_at": "2026-09-01T19:18:01.387Z"
+      "created_at": "2026-09-14T17:17:50.062Z",
+      "updated_at": "2026-09-14T17:27:50.062Z"
     }
   ],
   "order_items": [
     {
-      "id": "02096c17-0673-4062-9e84-050fd35c81ac",
-      "order_id": "e7d07dd5-33df-49a4-b9cf-d855d85867e7",
-      "menu_item_id": "4e59928b-2873-479c-9af1-66d8e1435773",
-      "variant_id": "d540fbfb-4a30-421b-97c4-c078a079525d",
+      "id": "f810d077-41a1-4e2e-8a32-47b708e76479",
+      "order_id": "b7b62104-7d8c-4b5a-93fe-51503d904cb6",
+      "menu_item_id": "41c402ce-8889-4f30-b4f1-ce49b5761627",
+      "variant_id": "22b36fcf-b411-47dd-84ef-d023029a201c",
       "item_name_snapshot": "Chicken Karahi",
       "variant_name_snapshot": "Half",
       "quantity": 2,
@@ -998,19 +1377,19 @@
       "subtotal": 1700
     },
     {
-      "id": "efa7567a-6305-40b2-b7c6-dc5e47a442f0",
-      "order_id": "e7d07dd5-33df-49a4-b9cf-d855d85867e7",
-      "menu_item_id": "c3b0995c-919d-4352-ae4f-41ddf418b49f",
+      "id": "a5a09b0b-f0c6-42cd-b458-4b2f4ee15dd0",
+      "order_id": "b7b62104-7d8c-4b5a-93fe-51503d904cb6",
+      "menu_item_id": "0f960fd1-0662-4def-8a8a-7c288d41f061",
       "item_name_snapshot": "Garlic Naan",
       "quantity": 3,
       "unit_price": 100,
       "subtotal": 300
     },
     {
-      "id": "45a0e237-4f50-4a3d-9e98-0178d13c8da0",
-      "order_id": "e7d07dd5-33df-49a4-b9cf-d855d85867e7",
-      "menu_item_id": "26d7612a-285f-45a1-b7a3-3b242fc9f8b0",
-      "variant_id": "95080977-a038-4f51-b45a-f16d1fb99b41",
+      "id": "98b5005a-bf93-47fa-a5d5-21fa49bc93c7",
+      "order_id": "b7b62104-7d8c-4b5a-93fe-51503d904cb6",
+      "menu_item_id": "5dbae0d3-b870-4367-8964-1c8ad1987316",
+      "variant_id": "643444a6-3e32-4ef5-a8b6-2cb2bd4ada9b",
       "item_name_snapshot": "Coca Cola",
       "variant_name_snapshot": "Regular",
       "quantity": 2,
@@ -1018,305 +1397,83 @@
       "subtotal": 240
     },
     {
-      "id": "126bc801-537b-432a-8374-3a1dc9521351",
-      "order_id": "27500f1d-9cb3-48fe-8570-47ccf62d94a7",
-      "menu_item_id": "1b5d7137-7cfc-4bbb-8062-0b6010c831af",
-      "variant_id": "39a4c4d1-5956-465d-bd76-40d9f3295ffc",
+      "id": "7bb2272b-e9cc-498a-8555-af754a6bfea3",
+      "order_id": "0449241c-84ca-4e93-a01b-c382975416ba",
+      "menu_item_id": "34107604-150f-4de9-8106-2ba52624c3a4",
+      "variant_id": "419e5a7c-d1a6-431a-8ce6-c53b9e1cc0dd",
       "item_name_snapshot": "Mutton Karahi",
       "variant_name_snapshot": "Full",
       "quantity": 1,
       "unit_price": 2200,
       "subtotal": 2200
-    },
-    {
-      "id": "9707caba-b0ac-49a9-a722-9ec7193b64fe",
-      "menu_item_id": "1b5d7137-7cfc-4bbb-8062-0b6010c831af",
-      "variant_id": "39a4c4d1-5956-465d-bd76-40d9f3295ffc",
-      "item_name_snapshot": "Mutton Karahi",
-      "variant_name_snapshot": "Full",
-      "quantity": 1,
-      "unit_price": 2200,
-      "subtotal": 2200,
-      "order_id": "24e0b8bc-ef32-4e5f-84d7-6d7470d8dda3"
-    },
-    {
-      "id": "66b9da18-fc55-4c38-9c64-1e6bc8c4346a",
-      "menu_item_id": "4e59928b-2873-479c-9af1-66d8e1435773",
-      "variant_id": "d540fbfb-4a30-421b-97c4-c078a079525d",
-      "item_name_snapshot": "Chicken Karahi",
-      "variant_name_snapshot": "Half",
-      "quantity": 1,
-      "unit_price": 850,
-      "subtotal": 850,
-      "order_id": "24e0b8bc-ef32-4e5f-84d7-6d7470d8dda3"
-    },
-    {
-      "id": "23ed3c63-fd5d-42ef-8313-e72589d924d8",
-      "menu_item_id": "26d7612a-285f-45a1-b7a3-3b242fc9f8b0",
-      "variant_id": "95080977-a038-4f51-b45a-f16d1fb99b41",
-      "item_name_snapshot": "Coca Cola",
-      "variant_name_snapshot": "Regular",
-      "quantity": 6,
-      "unit_price": 120,
-      "subtotal": 720,
-      "order_id": "24e0b8bc-ef32-4e5f-84d7-6d7470d8dda3"
-    },
-    {
-      "id": "35bc5ef9-84d6-4e07-bc7c-2eb4bd53b74f",
-      "menu_item_id": "4e59928b-2873-479c-9af1-66d8e1435773",
-      "variant_id": "d540fbfb-4a30-421b-97c4-c078a079525d",
-      "item_name_snapshot": "Chicken Karahi",
-      "variant_name_snapshot": "Half",
-      "quantity": 1,
-      "unit_price": 850,
-      "subtotal": 850,
-      "order_id": "1e6e0952-cbd3-4c24-b9f0-98d11b20bf77"
-    },
-    {
-      "id": "82c899ae-1683-408a-9c14-2bc9542c3b98",
-      "menu_item_id": "1b5d7137-7cfc-4bbb-8062-0b6010c831af",
-      "variant_id": "41779ebc-badb-48c4-9849-c9d47f4b6162",
-      "item_name_snapshot": "Mutton Karahi",
-      "variant_name_snapshot": "Half",
-      "quantity": 1,
-      "unit_price": 1200,
-      "subtotal": 1200,
-      "order_id": "e5c54914-a8ec-46eb-b147-d7f8eabef0e0"
     }
   ],
   "subscriptions": [
     {
-      "id": "f5db6862-2fd6-4985-bc1f-94f86acc2dd4",
-      "restaurant_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
+      "id": "466e21ec-b5d4-47af-bf34-ba7b8f72b42d",
+      "restaurant_id": "2cf7cad9-3568-434c-a6e3-33f05f708002",
       "plan": "Premium",
       "status": "active",
-      "start_date": "2026-09-01T16:43:26.346Z",
-      "expiry_date": "2027-10-01T16:43:26.347Z",
+      "start_date": "2026-09-14T17:37:49.296Z",
+      "expiry_date": "2027-09-14T17:37:49.298Z",
       "amount": 5000,
       "payment_status": "paid",
-      "created_at": "2026-09-01T16:43:26.346Z",
-      "updated_at": "2026-09-01T19:47:02.273Z"
+      "created_at": "2026-09-14T17:37:49.296Z"
     },
     {
-      "id": "ee808f58-485a-4129-ae88-b05f28cab56e",
-      "restaurant_id": "63bfac41-2105-4d9c-833d-2987d739c0aa",
+      "id": "f2f32ebd-7d36-4a28-a6b3-85b76f8a171a",
+      "restaurant_id": "a30fb233-41a2-4dfa-a715-b600897b08e1",
       "plan": "Standard",
       "status": "active",
-      "start_date": "2026-09-01T16:43:26.346Z",
-      "expiry_date": "2027-09-01T16:43:26.347Z",
+      "start_date": "2026-09-14T17:37:49.296Z",
+      "expiry_date": "2027-09-14T17:37:49.298Z",
       "amount": 3000,
       "payment_status": "paid",
-      "created_at": "2026-09-01T16:43:26.346Z",
-      "updated_at": "2026-09-02T13:45:11.244Z"
+      "created_at": "2026-09-14T17:37:49.296Z"
+    },
+    {
+      "id": "6f740dda-299f-4c01-94a6-669d85c4f8b1",
+      "restaurant_id": "e803fea9-e988-402f-94e0-fa8bce615a26",
+      "plan": "Pro",
+      "status": "active",
+      "start_date": "2026-09-14T17:37:49.296Z",
+      "expiry_date": "2027-09-14T17:37:49.298Z",
+      "amount": 5000,
+      "payment_status": "paid",
+      "created_at": "2026-09-14T17:37:49.296Z"
     }
   ],
+  "payments": [],
   "audit_logs": [
     {
-      "id": "1f4e43cc-5bd6-4459-a3b9-a8a5a61b93ea",
-      "user_id": "cfb1bdc8-553f-44fb-bab8-b34999b1cde9",
-      "restaurant_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
-      "action": "restaurant_active",
-      "entity_type": "restaurant",
-      "entity_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
-      "metadata": "{\"previous_status\":\"suspended\",\"new_status\":\"active\"}",
-      "created_at": "2026-09-02T13:44:59.692Z"
-    },
-    {
-      "id": "c9a76828-1081-4bfa-ab7b-22a5dd6013bb",
-      "user_id": "cfb1bdc8-553f-44fb-bab8-b34999b1cde9",
-      "restaurant_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
-      "action": "restaurant_suspended",
-      "entity_type": "restaurant",
-      "entity_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
-      "metadata": "{\"previous_status\":\"active\",\"new_status\":\"suspended\"}",
-      "created_at": "2026-09-02T13:44:40.202Z"
-    },
-    {
-      "id": "189955be-c7ea-4e2e-ad42-7bb9923f2f22",
-      "user_id": "cfb1bdc8-553f-44fb-bab8-b34999b1cde9",
-      "restaurant_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
-      "action": "payment_approved",
-      "entity_type": "payment",
-      "entity_id": "6274bd64-85ff-4871-be23-2d26f71493bb",
-      "metadata": "{\"extended_until\":\"2027-10-01T16:43:26.347Z\"}",
-      "created_at": "2026-09-01T19:47:02.272Z"
-    },
-    {
-      "id": "37cd5e39-75cb-494c-a083-18f3c1110fdc",
-      "user_id": "9741d522-d859-45f3-b7f6-eb7fc783ac16",
-      "restaurant_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
-      "action": "payment_proof_submitted",
-      "entity_type": "payment",
-      "entity_id": "6274bd64-85ff-4871-be23-2d26f71493bb",
-      "metadata": "{\"amount\":5000,\"transaction_reference\":\"2424242424\"}",
-      "created_at": "2026-09-01T19:46:30.564Z"
-    },
-    {
-      "id": "f52be65e-4f4e-46f5-afcc-5fa83033ad58",
-      "user_id": "9741d522-d859-45f3-b7f6-eb7fc783ac16",
-      "restaurant_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
-      "action": "order_status_changed",
-      "entity_type": "order",
-      "entity_id": "1e6e0952-cbd3-4c24-b9f0-98d11b20bf77",
-      "metadata": "{\"order_number\":\"#1002\",\"from\":\"new\",\"to\":\"cancelled\"}",
-      "created_at": "2026-09-01T19:18:02.528Z"
-    },
-    {
-      "id": "b214a091-4bb9-4f99-8674-0ad72888e760",
-      "user_id": "9741d522-d859-45f3-b7f6-eb7fc783ac16",
-      "restaurant_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
-      "action": "order_status_changed",
-      "entity_type": "order",
-      "entity_id": "e5c54914-a8ec-46eb-b147-d7f8eabef0e0",
-      "metadata": "{\"order_number\":\"#1003\",\"from\":\"new\",\"to\":\"cancelled\"}",
-      "created_at": "2026-09-01T19:18:01.387Z"
-    },
-    {
-      "id": "a09b2c8b-8ef9-42a2-95dd-6ac44d181990",
-      "user_id": "9741d522-d859-45f3-b7f6-eb7fc783ac16",
-      "restaurant_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
-      "action": "table_session_closed",
-      "entity_type": "table_session",
-      "entity_id": "42ce648f-e8da-45c3-86a7-833baebbe453",
-      "metadata": "{\"table_id\":\"390fee69-4b3e-41e0-9f60-5dd778d40975\",\"closed_at\":\"2026-09-01T19:17:43.145Z\"}",
-      "created_at": "2026-09-01T19:17:43.145Z"
-    },
-    {
-      "id": "c08892b0-65e5-4225-9457-fb54a2fa4ad5",
-      "user_id": "9741d522-d859-45f3-b7f6-eb7fc783ac16",
-      "restaurant_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
-      "action": "order_status_changed",
-      "entity_type": "order",
-      "entity_id": "24e0b8bc-ef32-4e5f-84d7-6d7470d8dda3",
-      "metadata": "{\"order_number\":\"#1001\",\"from\":\"ready\",\"to\":\"completed\"}",
-      "created_at": "2026-09-01T18:35:32.358Z"
-    },
-    {
-      "id": "ca37dec9-c379-4b08-bcaf-8da64cfe3c05",
-      "user_id": "9741d522-d859-45f3-b7f6-eb7fc783ac16",
-      "restaurant_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
-      "action": "order_status_changed",
-      "entity_type": "order",
-      "entity_id": "27500f1d-9cb3-48fe-8570-47ccf62d94a7",
-      "metadata": "{\"order_number\":\"#1002\",\"from\":\"ready\",\"to\":\"completed\"}",
-      "created_at": "2026-09-01T18:35:31.017Z"
-    },
-    {
-      "id": "da7483b3-5590-41f2-978d-829af1b32293",
-      "user_id": "9741d522-d859-45f3-b7f6-eb7fc783ac16",
-      "restaurant_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
-      "action": "order_status_changed",
-      "entity_type": "order",
-      "entity_id": "24e0b8bc-ef32-4e5f-84d7-6d7470d8dda3",
-      "metadata": "{\"order_number\":\"#1001\",\"from\":\"cooking\",\"to\":\"ready\"}",
-      "created_at": "2026-09-01T18:35:28.400Z"
-    },
-    {
-      "id": "a80a5b58-0e43-4ed7-8b4a-faaafa3e6309",
-      "user_id": "9741d522-d859-45f3-b7f6-eb7fc783ac16",
-      "restaurant_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
-      "action": "order_status_changed",
-      "entity_type": "order",
-      "entity_id": "27500f1d-9cb3-48fe-8570-47ccf62d94a7",
-      "metadata": "{\"order_number\":\"#1002\",\"from\":\"cooking\",\"to\":\"ready\"}",
-      "created_at": "2026-09-01T18:35:26.585Z"
-    },
-    {
-      "id": "dd76b314-2590-46aa-84fc-7c27d9954bf0",
-      "user_id": "9741d522-d859-45f3-b7f6-eb7fc783ac16",
-      "restaurant_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
-      "action": "order_status_changed",
-      "entity_type": "order",
-      "entity_id": "24e0b8bc-ef32-4e5f-84d7-6d7470d8dda3",
-      "metadata": "{\"order_number\":\"#1001\",\"from\":\"accepted\",\"to\":\"cooking\"}",
-      "created_at": "2026-09-01T18:35:11.925Z"
-    },
-    {
-      "id": "a7c63699-b315-43a3-8fe5-5ebbd6265fd5",
-      "user_id": "9741d522-d859-45f3-b7f6-eb7fc783ac16",
-      "restaurant_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
-      "action": "order_status_changed",
-      "entity_type": "order",
-      "entity_id": "24e0b8bc-ef32-4e5f-84d7-6d7470d8dda3",
-      "metadata": "{\"order_number\":\"#1001\",\"from\":\"new\",\"to\":\"accepted\"}",
-      "created_at": "2026-09-01T18:35:09.035Z"
-    },
-    {
-      "id": "7ecd575a-35c0-4dd7-aca5-7a85e57acccb",
-      "user_id": "9741d522-d859-45f3-b7f6-eb7fc783ac16",
-      "restaurant_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
-      "action": "table_session_closed",
-      "entity_type": "table_session",
-      "entity_id": "72194d5d-be2d-4420-97c1-11024c9bf873",
-      "metadata": "{\"table_id\":\"5c46e0bc-2d6c-4388-841c-f47f62217a94\",\"closed_at\":\"2026-09-01T18:33:24.785Z\"}",
-      "created_at": "2026-09-01T18:33:24.785Z"
-    },
-    {
-      "id": "76ac2477-ffe5-4188-9e10-da751b822dbd",
-      "user_id": "9741d522-d859-45f3-b7f6-eb7fc783ac16",
-      "restaurant_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
-      "action": "table_session_closed",
-      "entity_type": "table_session",
-      "entity_id": "2a3cdf97-62a4-428c-af20-026ee5dddf11",
-      "metadata": "{\"table_id\":\"e5dbb65f-b33c-4532-90d4-24ae16ddfa98\",\"closed_at\":\"2026-09-01T18:33:22.417Z\"}",
-      "created_at": "2026-09-01T18:33:22.417Z"
-    },
-    {
-      "id": "f3b10f79-9669-4e7b-b74d-8aa8ed0b6f77",
-      "user_id": "cfb1bdc8-553f-44fb-bab8-b34999b1cde9",
+      "id": "ae4afc61-4b56-49d1-af66-04f0f20fac9e",
+      "user_id": "088ad5d0-26d8-46d9-8ef8-27a64d19e0e4",
       "action": "restaurant_created",
       "entity_type": "restaurant",
-      "entity_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
+      "entity_id": "2cf7cad9-3568-434c-a6e3-33f05f708002",
       "metadata": "{\"name\":\"Royal Karahi\"}",
-      "created_at": "2026-09-01T16:43:26.346Z"
+      "created_at": "2026-09-14T17:37:49.296Z"
     },
     {
-      "id": "52954711-2395-4bf8-932f-ef095d4f9f59",
-      "user_id": "cfb1bdc8-553f-44fb-bab8-b34999b1cde9",
+      "id": "2eb36f99-dc78-4a78-93d8-e3b3180d625a",
+      "user_id": "088ad5d0-26d8-46d9-8ef8-27a64d19e0e4",
       "action": "restaurant_created",
       "entity_type": "restaurant",
-      "entity_id": "63bfac41-2105-4d9c-833d-2987d739c0aa",
+      "entity_id": "a30fb233-41a2-4dfa-a715-b600897b08e1",
       "metadata": "{\"name\":\"Artisan Pizza & Pasta\"}",
-      "created_at": "2026-09-01T16:43:26.346Z"
+      "created_at": "2026-09-14T17:37:49.296Z"
     },
     {
-      "id": "0347a358-bb53-4e1f-a737-08d25a62b953",
-      "user_id": "9741d522-d859-45f3-b7f6-eb7fc783ac16",
-      "restaurant_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
-      "action": "table_session_closed",
-      "entity_type": "table_session",
-      "entity_id": "ae7dbd0f-287f-453d-99b4-02805381876a",
-      "metadata": "{\"table_id\":\"390fee69-4b3e-41e0-9f60-5dd778d40975\",\"closed_at\":\"2026-09-02T13:47:54.536Z\"}",
-      "created_at": "2026-09-02T13:47:54.536Z"
-    },
-    {
-      "id": "5bcffd98-8606-4732-821f-50437a70f7bf",
-      "user_id": "9741d522-d859-45f3-b7f6-eb7fc783ac16",
-      "restaurant_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
-      "action": "table_session_closed",
-      "entity_type": "table_session",
-      "entity_id": "2b25a811-d17a-44b2-bc9d-abcba8294626",
-      "metadata": "{\"table_id\":\"e5dbb65f-b33c-4532-90d4-24ae16ddfa98\",\"closed_at\":\"2026-09-02T13:47:56.876Z\"}",
-      "created_at": "2026-09-02T13:47:56.876Z"
+      "id": "f6fca988-2fcc-4bc4-8f85-dbe86c8a8e34",
+      "user_id": "088ad5d0-26d8-46d9-8ef8-27a64d19e0e4",
+      "action": "restaurant_created",
+      "entity_type": "restaurant",
+      "entity_id": "e803fea9-e988-402f-94e0-fa8bce615a26",
+      "metadata": "{\"name\":\"Burgerizza\"}",
+      "created_at": "2026-09-14T17:37:49.296Z"
     }
   ],
   "_meta": {
-    "order_counter": 1003
-  },
-  "payments": [
-    {
-      "id": "6274bd64-85ff-4871-be23-2d26f71493bb",
-      "restaurant_id": "e612217e-2cb2-437f-908b-0e90096a84fc",
-      "subscription_id": "f5db6862-2fd6-4985-bc1f-94f86acc2dd4",
-      "amount": 5000,
-      "screenshot_url": "/uploads/308eda3b-9eb0-47d0-8ae5-4c65966e87c9.jpg",
-      "transaction_reference": "2424242424",
-      "notes": "Easypaisa",
-      "status": "approved",
-      "submitted_at": "2026-09-01T19:46:30.564Z",
-      "reviewed_at": "2026-09-01T19:47:02.272Z",
-      "reviewed_by": "cfb1bdc8-553f-44fb-bab8-b34999b1cde9",
-      "updated_at": "2026-09-01T19:47:02.272Z"
-    }
-  ]
+    "order_counter": 1000
+  }
 }
