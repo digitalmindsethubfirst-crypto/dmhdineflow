@@ -73,6 +73,11 @@ export function requireActiveRestaurant(req: AuthRequest, res: Response, next: N
     return;
   }
 
+  if (req.user.role === 'super_admin') {
+    next();
+    return;
+  }
+
   const restaurant = db.findById('restaurants', req.user.restaurant_id);
   if (!restaurant) {
     res.status(404).json({ error: 'Restaurant not found.' });
@@ -86,6 +91,21 @@ export function requireActiveRestaurant(req: AuthRequest, res: Response, next: N
 
   if (restaurant.status === 'inactive') {
     res.status(403).json({ error: 'Your restaurant account is inactive. Please contact administration.' });
+    return;
+  }
+
+  // Dynamic Monthly Subscription Expiry check
+  const now = new Date();
+  const expiryDate = restaurant.subscription_expiry ? new Date(restaurant.subscription_expiry) : new Date(0);
+  if (now > expiryDate || restaurant.subscription_status === 'payment_due' || restaurant.subscription_status === 'expired') {
+    if (restaurant.subscription_status === 'active') {
+      db.update('restaurants', restaurant.id, { subscription_status: 'payment_due' });
+      db.forceSave();
+    }
+    res.status(403).json({
+      error: 'Your subscription payment is due. Please contact the administrator to renew your subscription.',
+      code: 'SUBSCRIPTION_PAYMENT_DUE',
+    });
     return;
   }
 

@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import { config } from '../config/env';
 import { db } from '../db/database';
 import { AuthRequest, verifyToken } from '../middleware/auth';
+import { checkAndUpdateSubscription } from '../services/subscription.service';
 
 const router = Router();
 
@@ -32,11 +33,16 @@ router.post('/login', (req: Request, res: Response) => {
     return;
   }
 
-  // Check restaurant status for non-admin users
-  if (user.restaurant_id) {
-    const restaurant = db.findById('restaurants', user.restaurant_id);
-    if (restaurant && restaurant.status === 'suspended') {
-      res.status(403).json({ error: 'Your restaurant account is currently suspended. Please contact administration.' });
+  // Automatic Monthly Subscription & Expiry Check for Restaurant Staff/Owners
+  if (user.restaurant_id && (user.role === 'restaurant_owner' || user.role === 'kitchen_staff')) {
+    const subCheck = checkAndUpdateSubscription(user.restaurant_id);
+    if (subCheck.isDue) {
+      res.status(403).json({
+        error: 'Your subscription payment is due. Please contact the administrator to renew your subscription.',
+        code: 'SUBSCRIPTION_PAYMENT_DUE',
+        status: subCheck.status,
+        expiry: subCheck.expiryDate,
+      });
       return;
     }
   }

@@ -6,6 +6,7 @@ import { v4 as uuid } from 'uuid';
 import { db } from '../db/database';
 import { AuthRequest, verifyToken, requireRole } from '../middleware/auth';
 import { config } from '../config/env';
+import { checkAndUpdateSubscription, renewMonthlySubscription } from '../services/subscription.service';
 
 const router = Router();
 
@@ -342,14 +343,55 @@ router.get('/audit-logs', verifyToken, requireRole('super_admin'), (req: AuthReq
   });
 });
 
-// GET /api/admin/subscriptions
+// GET /api/admin/subscriptions (Dynamic Monthly Subscription Management)
 router.get('/subscriptions', verifyToken, requireRole('super_admin'), (req: AuthRequest, res: Response) => {
   const subs = db.getAll('subscriptions') as any[];
+  const now = new Date();
+
   const result = subs.map((s: any) => {
     const restaurant = db.findById('restaurants', s.restaurant_id);
-    return { ...s, restaurant_name: restaurant?.name || 'Unknown' };
+    const subCheck = checkAndUpdateSubscription(s.restaurant_id);
+    const expiryDate = s.expiry_date ? new Date(s.expiry_date) : (restaurant?.subscription_expiry ? new Date(restaurant.subscription_expiry) : new Date(0));
+    const daysRemaining = Math.ceil((expiryDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+
+    return {
+      ...s,
+      status: subCheck.status,
+      expiry_date: restaurant?.subscription_expiry || s.expiry_date,
+      restaurant_name: restaurant?.name || 'Unknown',
+      restaurant_slug: restaurant?.slug || '',
+      restaurant_status: restaurant?.status || 'inactive',
+      days_remaining: daysRemaining,
+      is_expired: now > expiryDate || subCheck.isDue,
+    };
   });
+
   res.json(result);
+});
+
+// POST /api/admin/subscriptions/:id/renew (Renew / Extend Monthly Subscription by 1 Month)
+router.post('/subscriptions/:id/renew', verifyToken, requireRole('super_admin'), (req: AuthRequest, res: Response) => {
+  const sub = db.findById('subscriptions', req.params.id);
+  if (!sub) {
+    res.status(404).json({ error: 'Subscription not found.' });
+    return;
+  }
+
+  const renewed = renewMonthlySubscription(sub.restaurant_id, req.body.amount);
+  res.json({ message: 'Subscription successfully renewed for 1 Month (+30 Days).', ...renewed });
+});
+
+// POST /api/admin/restaurants/:id/renew-subscription (Direct Restaurant Subscription Renewal)
+router.post('/restaurants/:id/renew-subscription', verifyToken, requireRole('super_admin'), (req: AuthRequest, res: Response) => {
+  const restaurantId = req.params.id;
+  const restaurant = db.findById('restaurants', restaurantId);
+  if (!restaurant) {
+    res.status(404).json({ error: 'Restaurant not found.' });
+    return;
+  }
+
+  const renewed = renewMonthlySubscription(restaurantId, req.body.amount);
+  res.json({ message: `Subscription for "${restaurant.name}" renewed for 1 Month (+30 Days).`, ...renewed });
 });
 
 // PATCH /api/admin/subscriptions/:id
@@ -365,6 +407,10 @@ router.patch('/subscriptions/:id', verifyToken, requireRole('super_admin'), (req
   if (req.body.status) {
     db.update('restaurants', sub.restaurant_id, { subscription_status: req.body.status });
   }
+  if (req.body.expiry_date) {
+    db.update('restaurants', sub.restaurant_id, { subscription_expiry: req.body.expiry_date });
+  }
+  db.forceSave();
 
   res.json(updated);
 });

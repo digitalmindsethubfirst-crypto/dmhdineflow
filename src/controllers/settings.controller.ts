@@ -101,7 +101,110 @@ router.patch('/restaurants/:restaurantId/settings', verifyToken, requireRole('su
     created_at: new Date().toISOString(),
   });
 
-  res.json({ message: 'Settings updated successfully.', restaurant: updatedRestaurant });
+// GET /api/admin/settings/profile (Super Admin Profile Info)
+router.get('/admin/settings/profile', verifyToken, requireRole('super_admin'), (req: AuthRequest, res: Response) => {
+  const user = db.findById('users', req.user!.id);
+  if (!user) {
+    res.status(404).json({ error: 'Super Admin user not found.' });
+    return;
+  }
+
+  // Get super admin platform branding / logo if set in admin profile
+  res.json({
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    phone: user.phone || '',
+    role: user.role,
+    logo: (user as any).logo || '/dmh-logo.png',
+  });
+});
+
+// PATCH /api/admin/settings/profile (Update Super Admin Profile & Platform Logo)
+router.patch('/admin/settings/profile', verifyToken, requireRole('super_admin'), upload.single('logo'), (req: AuthRequest, res: Response) => {
+  const user = db.findById('users', req.user!.id);
+  if (!user) {
+    res.status(404).json({ error: 'Super Admin user not found.' });
+    return;
+  }
+
+  const { name, email, phone } = req.body;
+  const updates: any = {};
+
+  if (name && name.trim()) {
+    updates.name = name.trim();
+  }
+  if (phone !== undefined) {
+    updates.phone = phone.trim();
+  }
+
+  if (email && email.trim().toLowerCase() !== user.email.toLowerCase()) {
+    const cleanEmail = email.trim().toLowerCase();
+    const existing = db.findOne('users', (u: any) => u.email.toLowerCase() === cleanEmail && u.id !== user.id);
+    if (existing) {
+      res.status(400).json({ error: 'An account with this email already exists.' });
+      return;
+    }
+    updates.email = cleanEmail;
+  }
+
+  if (req.file) {
+    updates.logo = `/uploads/${req.file.filename}`;
+  } else if (req.body.logo_url) {
+    updates.logo = req.body.logo_url;
+  }
+
+  const updatedUser = db.update('users', user.id, updates);
+  db.forceSave();
+
+  res.json({
+    message: 'Profile settings updated successfully.',
+    user: {
+      id: updatedUser.id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      phone: updatedUser.phone,
+      role: updatedUser.role,
+      logo: updatedUser.logo || '/dmh-logo.png',
+    },
+  });
+});
+
+// PATCH /api/admin/settings/password (Update Super Admin Password)
+router.patch('/admin/settings/password', verifyToken, requireRole('super_admin'), (req: AuthRequest, res: Response) => {
+  const user = db.findById('users', req.user!.id);
+  if (!user) {
+    res.status(404).json({ error: 'Super Admin user not found.' });
+    return;
+  }
+
+  const { current_password, new_password, confirm_password } = req.body;
+
+  if (!current_password || !new_password) {
+    res.status(400).json({ error: 'Current password and new password are required.' });
+    return;
+  }
+
+  if (new_password.length < 6) {
+    res.status(400).json({ error: 'New password must be at least 6 characters long.' });
+    return;
+  }
+
+  if (confirm_password && new_password !== confirm_password) {
+    res.status(400).json({ error: 'New password and confirmation do not match.' });
+    return;
+  }
+
+  if (!bcrypt.compareSync(current_password, user.password_hash)) {
+    res.status(400).json({ error: 'Current password is incorrect.' });
+    return;
+  }
+
+  const newHash = bcrypt.hashSync(new_password, 10);
+  db.update('users', user.id, { password_hash: newHash });
+  db.forceSave();
+
+  res.json({ message: 'Password changed successfully.' });
 });
 
 export default router;
