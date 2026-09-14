@@ -9,9 +9,12 @@ RUN npm install
 # Copy source code
 COPY . .
 
+# Build TypeScript
+RUN npm run build
+
 # Ensure data and uploads directories exist
 RUN mkdir -p data uploads
 
 EXPOSE 3001
 
-CMD ["npx", "tsx", "src/index.ts"]
+CMD ["npm", "start"]
