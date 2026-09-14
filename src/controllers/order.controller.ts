@@ -174,11 +174,12 @@ router.post('/customer/orders/online', (req: Request, res: Response) => {
     currency: restaurant.currency || 'PKR',
   };
 
-  // Socket notification to Restaurant & Kitchen
+  // Socket notification to Restaurant, Kitchen, and Order Room
   const io = (global as any).__io;
   if (io) {
     io.to(`restaurant_${restaurant_id}`).emit('order:new', fullOrder);
     io.to(`kitchen_${restaurant_id}`).emit('order:new', fullOrder);
+    io.to(`order_${orderId}`).emit('order:new', fullOrder);
   }
 
   res.status(201).json(fullOrder);
@@ -304,6 +305,7 @@ router.post('/orders', (req: Request, res: Response) => {
   if (io) {
     io.to(`restaurant_${restaurant_id}`).emit('order:new', fullOrder);
     io.to(`kitchen_${restaurant_id}`).emit('order:new', fullOrder);
+    io.to(`order_${orderId}`).emit('order:new', fullOrder);
     io.to(`session_${session_id}`).emit('order:new', fullOrder);
   }
 
@@ -514,9 +516,14 @@ router.patch('/orders/:id/status', verifyToken, requireRole('super_admin', 'rest
   const io = (global as any).__io;
   if (io) {
     io.to(`restaurant_${order.restaurant_id}`).emit('order:status_updated', fullOrder);
+    io.to(`restaurant_${order.restaurant_id}`).emit('order:updated', fullOrder);
     io.to(`kitchen_${order.restaurant_id}`).emit('order:status_updated', fullOrder);
+    io.to(`kitchen_${order.restaurant_id}`).emit('order:updated', fullOrder);
+    io.to(`order_${order.id}`).emit('order:status_updated', fullOrder);
+    io.to(`order_${order.id}`).emit('order:updated', fullOrder);
     if (order.table_session_id) {
       io.to(`session_${order.table_session_id}`).emit('order:status_updated', fullOrder);
+      io.to(`session_${order.table_session_id}`).emit('order:updated', fullOrder);
     }
   }
 
@@ -573,13 +580,19 @@ router.patch('/orders/:id/payment', verifyToken, requireRole('super_admin', 'res
     created_at: now,
   });
 
+  db.forceSave();
+
   // Socket emit
-  const io = (global as any).__io;
   if (io) {
     io.to(`restaurant_${order.restaurant_id}`).emit('order:status_updated', fullOrder);
+    io.to(`restaurant_${order.restaurant_id}`).emit('order:updated', fullOrder);
     io.to(`kitchen_${order.restaurant_id}`).emit('order:status_updated', fullOrder);
+    io.to(`kitchen_${order.restaurant_id}`).emit('order:updated', fullOrder);
+    io.to(`order_${order.id}`).emit('order:status_updated', fullOrder);
+    io.to(`order_${order.id}`).emit('order:updated', fullOrder);
     if (order.table_session_id) {
       io.to(`session_${order.table_session_id}`).emit('order:status_updated', fullOrder);
+      io.to(`session_${order.table_session_id}`).emit('order:updated', fullOrder);
     }
   }
 

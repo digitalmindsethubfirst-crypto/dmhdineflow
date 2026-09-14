@@ -26,7 +26,14 @@ export function setupSockets(io: Server) {
       }
     });
 
-    // 4. Join super admin room (for platform alerts)
+    // 4. Join individual customer order room (for live order tracking)
+    socket.on('join:order', (orderId: string) => {
+      if (orderId) {
+        socket.join(`order_${orderId}`);
+      }
+    });
+
+    // 5. Join super admin room (for platform alerts)
     socket.on('join:admin', () => {
       socket.join('admin_platform');
     });
