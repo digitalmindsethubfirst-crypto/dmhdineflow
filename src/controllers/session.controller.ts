@@ -199,7 +199,11 @@ router.get('/customer/table/:token', (req: Request, res: Response) => {
 
   // Create a brand new table session if none active
   if (!session) {
-    const newCustomerToken = uuid(); // Server-authoritative token for this session
+    // PRIVACY FIX: If the customer already has a valid token in their browser (clientToken),
+    // we reuse it for their new active session. This allows them to start a new order
+    // while still retaining secure access to their previous completed bills.
+    // If it's a completely new customer (no token), generate a fresh one.
+    const newCustomerToken = clientToken || uuid(); 
     session = {
       id: uuid(),
       restaurant_id: restaurant.id,
@@ -244,6 +248,13 @@ router.get('/customer/table/:token', (req: Request, res: Response) => {
     return { ...o, items };
   });
 
+  // Check if this specific customer token has any orders (active or completed) 
+  // so the frontend knows whether to show a "View Bill" button even if active orders are 0.
+  const hasHistoricalOrders = db.find('orders', (o: any) => 
+    o.customer_session_token === authorizedToken && 
+    o.status !== 'cancelled'
+  ).length > 0;
+
   res.json({
     restaurant: {
       id: restaurant.id,
@@ -271,9 +282,6 @@ router.get('/customer/table/:token', (req: Request, res: Response) => {
     session: {
       id: session.id,
       session_token: session.session_token,
-      // CRITICAL: Return the SERVER-AUTHORITATIVE token so the client stores and uses THIS token.
-      // This replaces whatever browser-generated UUID the client had before, ensuring correct
-      // order isolation even after page refreshes or on shared devices.
       customer_session_token: authorizedToken,
       started_at: session.started_at,
     },
@@ -281,6 +289,66 @@ router.get('/customer/table/:token', (req: Request, res: Response) => {
     menu_items: itemsWithVariants,
     current_orders: myActiveOrders,
     session_total: myActiveOrders.reduce((sum: number, o: any) => sum + (o.status !== 'cancelled' ? o.total : 0), 0),
+    has_historical_orders: hasHistoricalOrders,
+  });
+});
+
+// GET /api/customer/table/:token/bill
+// Strictly fetches the bill (including completed orders) for the requesting customer.
+// It relies on the client's x-customer-session token to ensure privacy.
+router.get('/table/:token/bill', (req: Request, res: Response) => {
+  const table = db.findOne('tables', (t: any) => t.qr_token === req.params.token);
+  if (!table) {
+    res.status(404).json({ status: 'error', error: 'Table not found or QR code invalid.' });
+    return;
+  }
+
+  const restaurant = db.findById('restaurants', table.restaurant_id);
+  if (!restaurant) {
+    res.status(404).json({ status: 'error', error: 'Restaurant not found.' });
+    return;
+  }
+
+  const clientToken = (req.headers['x-customer-session'] as string) || (req.query.customer_session as string) || '';
+  if (!clientToken) {
+    res.status(401).json({ status: 'error', error: 'No active session token provided.' });
+    return;
+  }
+
+  // Find ALL orders for this specific customer at this table (across any active or closed sessions)
+  // This ensures that even if a session was closed and a new one was started, the customer sees their full bill.
+  const customerOrders = (db.find('orders', (o: any) =>
+    o.table_id === table.id &&
+    o.customer_session_token === clientToken &&
+    o.status !== 'cancelled'
+  ) as any[]).map((o: any) => {
+    const items = db.find('order_items', (oi: any) => oi.order_id === o.id);
+    return { ...o, items };
+  });
+
+  if (customerOrders.length === 0) {
+    res.status(404).json({ status: 'error', error: 'Bill not found or no orders placed.' });
+    return;
+  }
+
+  // Get the most recent session ID from the orders for socket connection
+  const latestOrderId = customerOrders[customerOrders.length - 1].table_session_id;
+
+  res.json({
+    restaurant: {
+      id: restaurant.id,
+      name: restaurant.name,
+      logo: restaurant.logo,
+      currency: restaurant.currency,
+    },
+    table: {
+      id: table.id,
+      table_number: table.table_number,
+    },
+    session: {
+      id: latestOrderId
+    },
+    current_orders: customerOrders, // Includes ALL active and completed orders for this customer
   });
 });
 
