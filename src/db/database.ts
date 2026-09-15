@@ -113,6 +113,8 @@ export interface Order {
   order_type?: 'table' | 'delivery' | 'pickup';
   table_id?: string;
   table_session_id?: string;
+  customer_session_token?: string;
+  customer_token?: string;
   order_number: string;
   status: 'new' | 'accepted' | 'cooking' | 'ready' | 'out_for_delivery' | 'completed' | 'delivered' | 'cancelled';
   subtotal: number;

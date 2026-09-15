@@ -161,27 +161,68 @@ router.get('/customer/table/:token', (req: Request, res: Response) => {
     return;
   }
 
-  // 5. Find or create active table session
+  // 6. Extract requesting customer's unique session token (sent by client)
+  const clientToken = (req.headers['x-customer-session'] as string) || (req.query.customer_session as string) || '';
+
+  // 7. Find or auto-close previous completed table session
   let session = db.findOne('table_sessions', (s: any) => s.table_id === table.id && s.status === 'active');
   const now = new Date().toISOString();
 
+  if (session) {
+    // Check all orders placed in this table session
+    const sessionOrders = db.find('orders', (o: any) => o.table_session_id === session.id) as any[];
+    const hasActiveOrders = sessionOrders.some((o: any) => !['completed', 'delivered', 'cancelled'].includes(o.status));
+
+    // If all previous orders have reached served/completed or cancelled, automatically expire & close the session
+    if (sessionOrders.length > 0 && !hasActiveOrders) {
+      db.update('table_sessions', session.id, {
+        status: 'closed',
+        closed_at: now,
+      });
+      session = null; // Force creation of a fresh table session for the new customer
+    }
+
+    // Also close stale sessions with no orders that were created more than 2 hours ago
+    if (session && sessionOrders.length === 0) {
+      const sessionAge = now > session.started_at
+        ? Date.now() - new Date(session.started_at).getTime()
+        : 0;
+      if (sessionAge > 2 * 60 * 60 * 1000) {
+        db.update('table_sessions', session.id, {
+          status: 'closed',
+          closed_at: now,
+        });
+        session = null;
+      }
+    }
+  }
+
+  // Create a brand new table session if none active
   if (!session) {
+    const newCustomerToken = uuid(); // Server-authoritative token for this session
     session = {
       id: uuid(),
       restaurant_id: restaurant.id,
       table_id: table.id,
       session_token: uuid(),
+      customer_session_token: newCustomerToken,
       status: 'active',
       started_at: now,
     };
     db.insert('table_sessions', session);
+    db.forceSave();
   }
 
-  // 6. Fetch categories for this restaurant
+  // CRITICAL: The authoritative customer token is ALWAYS the one stored on the session,
+  // not the client's browser UUID. This ensures consistent order isolation even after
+  // page refreshes, incognito windows, or shared devices.
+  const authorizedToken = session.customer_session_token as string;
+
+  // 8. Fetch categories for this restaurant
   const categories = db.find('categories', (c: any) => c.restaurant_id === restaurant.id && c.status === 'active') as any[];
   categories.sort((a: any, b: any) => a.sort_order - b.sort_order);
 
-  // 7. Fetch active menu items
+  // 9. Fetch active menu items
   const menuItems = db.find('menu_items', (i: any) => i.restaurant_id === restaurant.id) as any[];
   menuItems.sort((a: any, b: any) => a.sort_order - b.sort_order);
 
@@ -190,9 +231,15 @@ router.get('/customer/table/:token', (req: Request, res: Response) => {
     return { ...item, variants };
   });
 
-  // 8. Fetch current session orders (for table session aggregate view)
-  const sessionOrders = db.find('orders', (o: any) => o.table_session_id === session.id) as any[];
-  const formattedOrders = sessionOrders.map((o: any) => {
+  // 10. STRICT CUSTOMER ORDER ISOLATION:
+  // Use the SESSION'S authoritative token (server-generated), NOT the client's browser UUID.
+  // This ensures isolation even if the same physical device or browser is shared between customers.
+  const myActiveOrders = (db.find('orders', (o: any) =>
+    o.table_id === table.id &&
+    o.table_session_id === session.id &&
+    o.customer_session_token === authorizedToken &&
+    !['completed', 'delivered', 'cancelled'].includes(o.status)
+  ) as any[]).map((o: any) => {
     const items = db.find('order_items', (oi: any) => oi.order_id === o.id);
     return { ...o, items };
   });
@@ -224,12 +271,16 @@ router.get('/customer/table/:token', (req: Request, res: Response) => {
     session: {
       id: session.id,
       session_token: session.session_token,
+      // CRITICAL: Return the SERVER-AUTHORITATIVE token so the client stores and uses THIS token.
+      // This replaces whatever browser-generated UUID the client had before, ensuring correct
+      // order isolation even after page refreshes or on shared devices.
+      customer_session_token: authorizedToken,
       started_at: session.started_at,
     },
     categories,
     menu_items: itemsWithVariants,
-    current_orders: formattedOrders,
-    session_total: formattedOrders.reduce((sum: number, o: any) => sum + (o.status !== 'cancelled' ? o.total : 0), 0),
+    current_orders: myActiveOrders,
+    session_total: myActiveOrders.reduce((sum: number, o: any) => sum + (o.status !== 'cancelled' ? o.total : 0), 0),
   });
 });
 
@@ -283,7 +334,32 @@ router.get('/sessions/:id', (req: Request, res: Response) => {
 
   const table = db.findById('tables', session.table_id);
   const orders = db.find('orders', (o: any) => o.table_session_id === session.id) as any[];
-  const ordersWithItems = orders.map((o: any) => {
+
+  // Privacy verification: Check if caller is authenticated staff or customer with session
+  const authHeader = req.headers.authorization;
+  let isStaff = false;
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    try {
+      const jwt = require('jsonwebtoken');
+      const { config } = require('../config/env');
+      const decoded = jwt.verify(authHeader.split(' ')[1], config.jwtSecret);
+      if (decoded && (decoded.role === 'super_admin' || decoded.restaurant_id === session.restaurant_id)) {
+        isStaff = true;
+      }
+    } catch (e) {
+      // not staff
+    }
+  }
+
+  const customerSessionToken = (req.headers['x-customer-session'] as string) || (req.query.customer_session as string) || '';
+  let visibleOrders = orders;
+  if (!isStaff) {
+    visibleOrders = customerSessionToken
+      ? orders.filter((o: any) => o.customer_session_token === customerSessionToken)
+      : [];
+  }
+
+  const ordersWithItems = visibleOrders.map((o: any) => {
     const items = db.find('order_items', (oi: any) => oi.order_id === o.id);
     return { ...o, items };
   });

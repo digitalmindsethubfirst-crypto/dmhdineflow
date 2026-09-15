@@ -272,6 +272,9 @@ router.post('/orders', (req: Request, res: Response) => {
     order_type: 'table' as const,
     table_id,
     table_session_id: session_id,
+    // Use the SESSION's server-authoritative token (not the browser's UUID).
+    // This ensures orders are always correctly linked to their session regardless of client state.
+    customer_session_token: session.customer_session_token || '',
     order_number: orderNumber,
     status: 'new' as const,
     subtotal,
@@ -317,6 +320,14 @@ router.get('/customer/orders/:id', (req: Request, res: Response) => {
   const order = db.findById('orders', req.params.id);
   if (!order) {
     res.status(404).json({ error: 'Order not found.' });
+    return;
+  }
+
+  // PRIVACY CHECK: If this is a table order with a customer_session_token,
+  // verify the requesting customer owns this order
+  const callerToken = (req.headers['x-customer-session'] as string) || '';
+  if (order.customer_session_token && order.customer_session_token !== callerToken) {
+    res.status(403).json({ error: 'Access denied. This order does not belong to your session.' });
     return;
   }
 
@@ -527,6 +538,35 @@ router.patch('/orders/:id/status', verifyToken, requireRole('super_admin', 'rest
     }
   }
 
+  // AUTO-CLOSE SESSION: If all orders in this table session have reached a terminal state,
+  // automatically close the session so the next QR scan creates a fresh one.
+  if (order.table_session_id && ['completed', 'delivered', 'cancelled'].includes(status)) {
+    const sessionOrders = db.find('orders', (o: any) => o.table_session_id === order.table_session_id) as any[];
+    const allFinished = sessionOrders.every((o: any) => ['completed', 'delivered', 'cancelled'].includes(o.status));
+
+    if (allFinished) {
+      const closedSession = db.update('table_sessions', order.table_session_id, {
+        status: 'closed',
+        closed_at: new Date().toISOString(),
+      });
+      db.forceSave();
+
+      // Notify ALL relevant rooms that session is closed:
+      // 1. The customer's session room → clears "active order" banner on customer menu
+      // 2. The restaurant room → triggers owner Tables tab to auto-refresh and show session as closed
+      const sessionIo = (global as any).__io;
+      if (sessionIo) {
+        const closedPayload = {
+          session_id: order.table_session_id,
+          table_id: order.table_id,
+          restaurant_id: order.restaurant_id,
+        };
+        sessionIo.to(`session_${order.table_session_id}`).emit('session:closed', closedPayload);
+        sessionIo.to(`restaurant_${order.restaurant_id}`).emit('session:closed', closedPayload);
+      }
+    }
+  }
+
   res.json(fullOrder);
 });
 
@@ -594,6 +634,31 @@ router.patch('/orders/:id/payment', verifyToken, requireRole('super_admin', 'res
     if (order.table_session_id) {
       io.to(`session_${order.table_session_id}`).emit('order:status_updated', fullOrder);
       io.to(`session_${order.table_session_id}`).emit('order:updated', fullOrder);
+    }
+  }
+
+  // AUTO-CLOSE SESSION after payment completion (if status changed to completed/delivered)
+  if (order.table_session_id && updates.status && ['completed', 'delivered'].includes(updates.status)) {
+    const sessionOrders = db.find('orders', (o: any) => o.table_session_id === order.table_session_id) as any[];
+    const allFinished = sessionOrders.every((o: any) => ['completed', 'delivered', 'cancelled'].includes(o.status));
+
+    if (allFinished) {
+      db.update('table_sessions', order.table_session_id, {
+        status: 'closed',
+        closed_at: new Date().toISOString(),
+      });
+      db.forceSave();
+
+      const sessionIo = (global as any).__io;
+      if (sessionIo) {
+        const closedPayload = {
+          session_id: order.table_session_id,
+          table_id: order.table_id,
+          restaurant_id: order.restaurant_id,
+        };
+        sessionIo.to(`session_${order.table_session_id}`).emit('session:closed', closedPayload);
+        sessionIo.to(`restaurant_${order.restaurant_id}`).emit('session:closed', closedPayload);
+      }
     }
   }
 

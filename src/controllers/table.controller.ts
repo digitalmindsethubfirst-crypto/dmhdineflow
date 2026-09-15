@@ -13,11 +13,41 @@ router.get('/restaurants/:restaurantId/tables', verifyToken, requireRestaurant, 
   const tables = db.find('tables', (t: any) => t.restaurant_id === req.params.restaurantId) as any[];
   tables.sort((a: any, b: any) => a.table_number - b.table_number);
 
+  const now = new Date().toISOString();
+
   const result = tables.map((t: any) => {
-    const activeSession = db.findOne('table_sessions', (s: any) => s.table_id === t.id && s.status === 'active');
+    let activeSession = db.findOne('table_sessions', (s: any) => s.table_id === t.id && s.status === 'active');
+
+    // AUTO-CLOSE: If all orders in this session are in terminal state, close the session now.
+    if (activeSession) {
+      const sessionOrders = db.find('orders', (o: any) => o.table_session_id === activeSession.id) as any[];
+      const hasActiveOrders = sessionOrders.some((o: any) => !['completed', 'delivered', 'cancelled'].includes(o.status));
+
+      if (sessionOrders.length > 0 && !hasActiveOrders) {
+        const closedSessionId = activeSession.id; // Save ID before nulling
+        db.update('table_sessions', closedSessionId, {
+          status: 'closed',
+          closed_at: now,
+        });
+        db.forceSave();
+        activeSession = null;
+
+        // Notify customer session room so any open customer menu clears the active order banner
+        const io = (global as any).__io;
+        if (io) {
+          io.to(`session_${closedSessionId}`).emit('session:closed', {
+            session_id: closedSessionId,
+            table_id: t.id,
+            restaurant_id: req.params.restaurantId,
+          });
+        }
+      }
+    }
+
     const sessionOrders = activeSession
       ? db.find('orders', (o: any) => o.table_session_id === activeSession.id) as any[]
       : [];
+
     return {
       ...t,
       has_active_session: !!activeSession,
