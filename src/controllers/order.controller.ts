@@ -389,12 +389,25 @@ router.post('/customer/orders/:id/request-bill', (req: Request, res: Response) =
   const orderItems = db.find('order_items', (oi: any) => oi.order_id === order.id);
   const now = new Date().toISOString();
 
+  // Mark bill requested persistently on the order record
+  db.update('orders', order.id, {
+    bill_requested: true,
+    bill_requested_at: now,
+    bill_status: 'pending',
+  });
+  db.forceSave();
+
+  const formattedTableNum = table?.table_number
+    ? String(table.table_number).padStart(2, '0')
+    : (order.table_number || '?');
+
   const billRequestPayload = {
     id: `${order.id}_${Date.now()}`,
     order_id: order.id,
     order_number: order.order_number,
     table_id: order.table_id,
-    table_number: table?.table_number || (order.order_type === 'delivery' ? 'Delivery' : '?'),
+    table_number: formattedTableNum,
+    raw_table_number: table?.table_number || order.table_number || '',
     customer_name: order.customer_name || 'Guest',
     restaurant_id: order.restaurant_id,
     restaurant_name: restaurant?.name || '',
@@ -410,22 +423,93 @@ router.post('/customer/orders/:id/request-bill', (req: Request, res: Response) =
     discount: order.discount || 0,
     items: orderItems,
     status: order.status,
-    message: 'Customer Requested a Bill',
+    message: `Table ${formattedTableNum} has requested a bill.`,
     requested_at: now,
   };
 
-  // Emit real-time notification to Restaurant Owner and Staff rooms
+  // Emit real-time notification to Restaurant Owner, Kitchen, and Staff rooms
   const io = (global as any).__io;
   if (io) {
     io.to(`restaurant_${order.restaurant_id}`).emit('bill:requested', billRequestPayload);
     io.to(`kitchen_${order.restaurant_id}`).emit('bill:requested', billRequestPayload);
+    io.emit('bill:requested', billRequestPayload); // Global fallback broadcast to ensure instant arrival
   }
 
   res.json({
     success: true,
-    message: 'Waiter is getting you bill.',
+    message: `Table ${formattedTableNum} has requested a bill. Waiter is getting you bill.`,
     request: billRequestPayload,
   });
+});
+
+// GET /api/restaurants/:restaurantId/bill-requests (Get all active/pending bill requests for owner)
+router.get('/restaurants/:restaurantId/bill-requests', verifyToken, requireRestaurant, (req: AuthRequest, res: Response) => {
+  const restaurantId = req.params.restaurantId;
+  const restaurant = db.findById('restaurants', restaurantId);
+
+  // Find orders where customer requested a bill and not dismissed
+  const requestedOrders = db.find('orders', (o: any) =>
+    o.restaurant_id === restaurantId &&
+    o.bill_requested === true &&
+    o.bill_status !== 'dismissed'
+  ) as any[];
+
+  // Sort newest first
+  requestedOrders.sort((a: any, b: any) =>
+    new Date(b.bill_requested_at || b.created_at).getTime() - new Date(a.bill_requested_at || a.created_at).getTime()
+  );
+
+  const requests = requestedOrders.map((order: any) => {
+    const table = order.table_id ? db.findById('tables', order.table_id) : null;
+    const orderItems = db.find('order_items', (oi: any) => oi.order_id === order.id);
+    const formattedTableNum = table?.table_number
+      ? String(table.table_number).padStart(2, '0')
+      : (order.table_number || '?');
+
+    return {
+      id: `${order.id}_${new Date(order.bill_requested_at || order.created_at).getTime()}`,
+      order_id: order.id,
+      order_number: order.order_number,
+      table_id: order.table_id,
+      table_number: formattedTableNum,
+      raw_table_number: table?.table_number || order.table_number || '',
+      customer_name: order.customer_name || 'Guest',
+      restaurant_id: order.restaurant_id,
+      restaurant_name: restaurant?.name || '',
+      restaurant_logo: restaurant?.logo || '',
+      restaurant_address: restaurant?.address || '',
+      restaurant_city: restaurant?.city || '',
+      restaurant_phone: restaurant?.phone || '',
+      currency: restaurant?.currency || 'PKR',
+      total: order.total,
+      subtotal: order.subtotal,
+      tax: order.tax,
+      service_charge: order.service_charge,
+      discount: order.discount || 0,
+      items: orderItems,
+      status: order.status,
+      message: `Table ${formattedTableNum} has requested a bill.`,
+      requested_at: order.bill_requested_at || order.created_at,
+    };
+  });
+
+  res.json(requests);
+});
+
+// PATCH /api/restaurants/:restaurantId/bill-requests/:orderId/dismiss (Dismiss or mark bill request as printed)
+router.patch('/restaurants/:restaurantId/bill-requests/:orderId/dismiss', verifyToken, requireRestaurant, (req: AuthRequest, res: Response) => {
+  const order = db.findById('orders', req.params.orderId);
+  if (!order || order.restaurant_id !== req.params.restaurantId) {
+    res.status(404).json({ error: 'Order not found.' });
+    return;
+  }
+
+  db.update('orders', order.id, {
+    bill_status: 'dismissed',
+  });
+  db.forceSave();
+
+  res.json({ success: true, message: 'Bill request dismissed.' });
 });
 
 // GET /api/restaurants/:restaurantId/orders (Staff/Owner protected list)
