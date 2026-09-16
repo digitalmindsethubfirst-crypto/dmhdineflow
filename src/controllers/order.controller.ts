@@ -338,14 +338,19 @@ router.get('/customer/orders/:id', (req: Request, res: Response) => {
   const table = order.table_id ? db.findById('tables', order.table_id) : null;
   const orderItems = db.find('order_items', (oi: any) => oi.order_id === order.id);
 
-  // Return sanitized customer tracking details (no sensitive admin keys)
+  // Return sanitized customer tracking details with full billing/invoice metadata
   res.json({
     id: order.id,
     restaurant_id: order.restaurant_id,
     restaurant_name: restaurant?.name || '',
+    restaurant_logo: restaurant?.logo || '',
+    restaurant_address: restaurant?.address || '',
+    restaurant_city: restaurant?.city || '',
     restaurant_phone: restaurant?.phone || '',
     restaurant_whatsapp: restaurant?.whatsapp || '',
     currency: restaurant?.currency || 'PKR',
+    tax_rate: restaurant?.tax_rate || 0,
+    service_charge_rate: restaurant?.service_charge_rate || 0,
     order_number: order.order_number,
     order_type: order.order_type || (order.table_id ? 'table' : 'delivery'),
     status: order.status,

@@ -342,12 +342,15 @@ router.get('/table/:token/bill', (req: Request, res: Response) => {
     ) as any[]).map(s => s.id)
   );
 
+  const requestedOrderId = (req.query.order_id as string) || '';
+
   // Find ALL orders for this specific customer at this table (across any active or closed sessions)
   // This ensures that even if a session was closed and a new one was started, the customer sees their full bill.
   const customerOrders = (db.find('orders', (o: any) =>
     o.table_id === table.id &&
     o.status !== 'cancelled' &&
     (
+      (requestedOrderId && o.id === requestedOrderId) ||
       o.customer_session_token === clientToken ||
       o.customer_token === clientToken ||
       (o.table_session_id && customerSessionIds.has(o.table_session_id))
