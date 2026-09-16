@@ -376,6 +376,58 @@ router.get('/customer/orders/:id', (req: Request, res: Response) => {
   });
 });
 
+// POST /api/customer/orders/:id/request-bill
+router.post('/customer/orders/:id/request-bill', (req: Request, res: Response) => {
+  const order = db.findById('orders', req.params.id);
+  if (!order) {
+    res.status(404).json({ error: 'Order not found.' });
+    return;
+  }
+
+  const restaurant = db.findById('restaurants', order.restaurant_id);
+  const table = order.table_id ? db.findById('tables', order.table_id) : null;
+  const orderItems = db.find('order_items', (oi: any) => oi.order_id === order.id);
+  const now = new Date().toISOString();
+
+  const billRequestPayload = {
+    id: `${order.id}_${Date.now()}`,
+    order_id: order.id,
+    order_number: order.order_number,
+    table_id: order.table_id,
+    table_number: table?.table_number || (order.order_type === 'delivery' ? 'Delivery' : '?'),
+    customer_name: order.customer_name || 'Guest',
+    restaurant_id: order.restaurant_id,
+    restaurant_name: restaurant?.name || '',
+    restaurant_logo: restaurant?.logo || '',
+    restaurant_address: restaurant?.address || '',
+    restaurant_city: restaurant?.city || '',
+    restaurant_phone: restaurant?.phone || '',
+    currency: restaurant?.currency || 'PKR',
+    total: order.total,
+    subtotal: order.subtotal,
+    tax: order.tax,
+    service_charge: order.service_charge,
+    discount: order.discount || 0,
+    items: orderItems,
+    status: order.status,
+    message: 'Customer Requested a Bill',
+    requested_at: now,
+  };
+
+  // Emit real-time notification to Restaurant Owner and Staff rooms
+  const io = (global as any).__io;
+  if (io) {
+    io.to(`restaurant_${order.restaurant_id}`).emit('bill:requested', billRequestPayload);
+    io.to(`kitchen_${order.restaurant_id}`).emit('bill:requested', billRequestPayload);
+  }
+
+  res.json({
+    success: true,
+    message: 'Waiter is getting you bill.',
+    request: billRequestPayload,
+  });
+});
+
 // GET /api/restaurants/:restaurantId/orders (Staff/Owner protected list)
 router.get('/restaurants/:restaurantId/orders', verifyToken, requireRole('super_admin', 'restaurant_owner', 'kitchen_staff'), requireRestaurant, (req: AuthRequest, res: Response) => {
   let orders = db.find('orders', (o: any) => o.restaurant_id === req.params.restaurantId) as any[];

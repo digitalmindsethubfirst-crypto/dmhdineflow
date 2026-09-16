@@ -155,7 +155,7 @@ router.get('/restaurants/:restaurantId/tables/qr-all', verifyToken, requireRole(
       const qrBuffer = await QRCode.toBuffer(url, {
         width: 600, margin: 2, color: { dark: '#1e293b', light: '#ffffff' },
       });
-      zip.file(`Table_${(table as any).table_number}_QR.png`, qrBuffer);
+      zip.file(`Table-${(table as any).table_number}-QR.png`, qrBuffer);
     }
 
     const zipBuffer = await zip.generateAsync({ type: 'nodebuffer' });
