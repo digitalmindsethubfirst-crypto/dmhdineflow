@@ -213,6 +213,21 @@ router.get('/customer/table/:token', (req: Request, res: Response) => {
     };
     db.insert('table_sessions', session);
     db.forceSave();
+
+    // Instant Real-Time Notification: Emit session:started to restaurant room
+    const io = (global as any).__io;
+    if (io) {
+      io.to(`restaurant_${restaurant.id}`).emit('session:started', {
+        session_id: session.id,
+        table_id: table.id,
+        table_number: table.table_number,
+        restaurant_id: restaurant.id,
+      });
+      io.to(`restaurant_${restaurant.id}`).emit('table:updated', {
+        table_id: table.id,
+        restaurant_id: restaurant.id,
+      });
+    }
   } else if (!session.customer_session_token) {
     // Ensure existing active session has customer_session_token populated
     session.customer_session_token = session.session_token || uuid();
