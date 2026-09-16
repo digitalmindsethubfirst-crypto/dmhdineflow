@@ -199,11 +199,9 @@ router.get('/customer/table/:token', (req: Request, res: Response) => {
 
   // Create a brand new table session if none active
   if (!session) {
-    // PRIVACY FIX: If the customer already has a valid token in their browser (clientToken),
-    // we reuse it for their new active session. This allows them to start a new order
-    // while still retaining secure access to their previous completed bills.
-    // If it's a completely new customer (no token), generate a fresh one.
-    const newCustomerToken = clientToken || uuid(); 
+    // PRIVACY REQUIREMENT: Every new customer scanning a table receives a BRAND NEW unique customer_session_token (uuid).
+    // Never reuse previous customer tokens when creating a new session.
+    const newCustomerToken = uuid(); 
     session = {
       id: uuid(),
       restaurant_id: restaurant.id,
@@ -217,15 +215,13 @@ router.get('/customer/table/:token', (req: Request, res: Response) => {
     db.forceSave();
   } else if (!session.customer_session_token) {
     // Ensure existing active session has customer_session_token populated
-    session.customer_session_token = session.session_token || clientToken || uuid();
+    session.customer_session_token = session.session_token || uuid();
     db.update('table_sessions', session.id, { customer_session_token: session.customer_session_token });
     db.forceSave();
   }
 
-  // CRITICAL: The authoritative customer token is ALWAYS the one stored on the session,
-  // not the client's browser UUID. This ensures consistent order isolation even after
-  // page refreshes, incognito windows, or shared devices.
-  const authorizedToken = (session.customer_session_token || session.session_token || clientToken) as string;
+  // CRITICAL: The authoritative customer token is ALWAYS the one stored on the active session.
+  const authorizedToken = session.customer_session_token as string;
 
   // 8. Fetch categories for this restaurant
   const categories = db.find('categories', (c: any) => c.restaurant_id === restaurant.id && c.status === 'active') as any[];
@@ -344,13 +340,58 @@ router.get('/table/:token/bill', (req: Request, res: Response) => {
 
   const requestedOrderId = (req.query.order_id as string) || '';
 
-  // Find ALL orders for this specific customer at this table (across any active or closed sessions)
-  // This ensures that even if a session was closed and a new one was started, the customer sees their full bill.
+  // 1. If a specific order_id is requested, strictly verify customer ownership
+  if (requestedOrderId) {
+    const targetOrder = db.findById('orders', requestedOrderId);
+    if (!targetOrder || targetOrder.table_id !== table.id) {
+      res.status(404).json({ status: 'error', error: 'Order not found.' });
+      return;
+    }
+
+    // BACKEND AUTHORIZATION CHECK (Requirement 7):
+    const isOwner = (
+      clientToken && (
+        targetOrder.customer_session_token === clientToken ||
+        targetOrder.customer_token === clientToken ||
+        customerSessionIds.has(targetOrder.table_session_id)
+      )
+    );
+
+    if (!isOwner) {
+      res.status(403).json({ status: 'error', error: 'Access denied. You can only view your own bill.' });
+      return;
+    }
+
+    const items = db.find('order_items', (oi: any) => oi.order_id === targetOrder.id);
+    res.json({
+      restaurant: {
+        id: restaurant.id,
+        name: restaurant.name,
+        logo: restaurant.logo || '',
+        address: restaurant.address || '',
+        city: restaurant.city || '',
+        phone: restaurant.phone || '',
+        tax_rate: restaurant.tax_rate || 0,
+        service_charge_rate: restaurant.service_charge_rate || 0,
+        currency: restaurant.currency || 'PKR',
+      },
+      table: {
+        id: table.id,
+        table_number: table.table_number,
+      },
+      session: {
+        id: targetOrder.table_session_id || table.id,
+      },
+      current_orders: [{ ...targetOrder, items }],
+    });
+    return;
+  }
+
+  // 2. Fetch ALL orders belonging strictly to this customer token
   const customerOrders = (db.find('orders', (o: any) =>
     o.table_id === table.id &&
     o.status !== 'cancelled' &&
     (
-      (requestedOrderId && o.id === requestedOrderId) ||
       o.customer_session_token === clientToken ||
       o.customer_token === clientToken ||
       (o.table_session_id && customerSessionIds.has(o.table_session_id))

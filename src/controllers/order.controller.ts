@@ -567,6 +567,27 @@ router.patch('/orders/:id/status', verifyToken, requireRole('super_admin', 'rest
   const table = order.table_id ? db.findById('tables', order.table_id) : null;
   const orderItems = db.find('order_items', (oi: any) => oi.order_id === order.id);
 
+  // AUTOMATIC SESSION CLOSURE: When kitchen completes/delivers a table order,
+  // automatically expire & close the table session for that table.
+  if (['completed', 'delivered'].includes(status) && (order.table_session_id || order.table_id)) {
+    const now = new Date().toISOString();
+    if (order.table_session_id) {
+      db.update('table_sessions', order.table_session_id, {
+        status: 'closed',
+        closed_at: now,
+      });
+    }
+    if (order.table_id) {
+      const activeSessions = db.find('table_sessions', (s: any) => s.table_id === order.table_id && s.status === 'active') as any[];
+      activeSessions.forEach((s: any) => {
+        db.update('table_sessions', s.id, {
+          status: 'closed',
+          closed_at: now,
+        });
+      });
+    }
+  }
+
   const fullOrder = {
     ...updated,
     order_type: order.order_type || (order.table_id ? 'table' : 'delivery'),
@@ -595,6 +616,12 @@ router.patch('/orders/:id/status', verifyToken, requireRole('super_admin', 'rest
     if (order.table_session_id) {
       io.to(`session_${order.table_session_id}`).emit('order:status_updated', fullOrder);
       io.to(`session_${order.table_session_id}`).emit('order:updated', fullOrder);
+      if (['completed', 'delivered'].includes(status)) {
+        io.to(`session_${order.table_session_id}`).emit('session:closed', { session_id: order.table_session_id, table_id: order.table_id });
+      }
+    }
+    if (order.table_id && ['completed', 'delivered'].includes(status)) {
+      io.to(`table_${order.table_id}`).emit('session:closed', { table_id: order.table_id });
     }
   }
 
