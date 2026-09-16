@@ -266,15 +266,18 @@ router.post('/orders', (req: Request, res: Response) => {
   const sanitizedName = typeof customer_name === 'string' ? customer_name.trim().slice(0, 50) : '';
   const sanitizedNote = typeof customer_note === 'string' ? customer_note.trim().slice(0, 200) : '';
 
+  const clientTokenHeader = (req.headers['x-customer-session'] as string) || (req.query.customer_session as string) || '';
+  const orderSessionToken = session.customer_session_token || session.session_token || clientTokenHeader || '';
+
   const order = {
     id: orderId,
     restaurant_id,
     order_type: 'table' as const,
     table_id,
     table_session_id: session_id,
-    // Use the SESSION's server-authoritative token (not the browser's UUID).
-    // This ensures orders are always correctly linked to their session regardless of client state.
-    customer_session_token: session.customer_session_token || '',
+    // Use the SESSION's server-authoritative token and link client header
+    customer_session_token: orderSessionToken,
+    customer_token: clientTokenHeader || orderSessionToken,
     order_number: orderNumber,
     status: 'new' as const,
     subtotal,

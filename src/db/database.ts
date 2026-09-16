@@ -239,10 +239,62 @@ class Database {
       if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir, { recursive: true });
       }
+
+      // If persistent volume dbPath doesn't exist yet but baseline ./data/db.json exists, copy it over
+      const baselinePath = path.resolve('./data/db.json');
+      if (!fs.existsSync(this.dbPath) && fs.existsSync(baselinePath) && this.dbPath !== baselinePath) {
+        try {
+          fs.copyFileSync(baselinePath, this.dbPath);
+          console.log(`Copied baseline database to persistent path: ${this.dbPath}`);
+        } catch (copyErr) {
+          console.error('Failed to copy baseline database:', copyErr);
+        }
+      }
+
       if (fs.existsSync(this.dbPath)) {
         const raw = fs.readFileSync(this.dbPath, 'utf-8');
         const parsed = JSON.parse(raw);
         if (!parsed.payments) parsed.payments = [];
+        if (!parsed.subscriptions) parsed.subscriptions = [];
+        if (!parsed.audit_logs) parsed.audit_logs = [];
+        if (!parsed.orders) parsed.orders = [];
+        if (!parsed.table_sessions) parsed.table_sessions = [];
+        if (!parsed.tables) parsed.tables = [];
+
+        // Data Normalization Migration: Ensure all table_sessions have customer_session_token
+        let mutated = false;
+        parsed.table_sessions = (parsed.table_sessions || []).map((s: any) => {
+          if (!s.customer_session_token) {
+            s.customer_session_token = s.session_token || s.id;
+            mutated = true;
+          }
+          return s;
+        });
+
+        // Data Normalization Migration: Ensure all orders have customer_session_token linked to their session
+        const sessionTokenMap = new Map<string, string>();
+        parsed.table_sessions.forEach((s: any) => {
+          if (s.id && s.customer_session_token) {
+            sessionTokenMap.set(s.id, s.customer_session_token);
+          }
+        });
+
+        parsed.orders = (parsed.orders || []).map((o: any) => {
+          if (!o.customer_session_token && o.table_session_id && sessionTokenMap.has(o.table_session_id)) {
+            o.customer_session_token = sessionTokenMap.get(o.table_session_id);
+            mutated = true;
+          }
+          return o;
+        });
+
+        if (mutated) {
+          try {
+            fs.writeFileSync(this.dbPath, JSON.stringify(parsed, null, 2), 'utf-8');
+          } catch (saveErr) {
+            console.error('Failed to save normalized database:', saveErr);
+          }
+        }
+
         return parsed;
       }
     } catch (e) {

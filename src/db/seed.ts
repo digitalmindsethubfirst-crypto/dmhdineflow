@@ -3,8 +3,11 @@ import { v4 as uuid } from 'uuid';
 import { db } from './database';
 
 async function seed() {
-  console.log('🌱 Seeding DMH DineFlow database...');
-  db.reset();
+  if (db.count('users') > 0 || db.count('restaurants') > 0) {
+    console.log('Database already contains records. Skipping seed to prevent data loss.');
+    return;
+  }
+  console.log('🌱 Seeding DMH DineFlow initial database records...');
 
   const now = new Date().toISOString();
   const expiry = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString();

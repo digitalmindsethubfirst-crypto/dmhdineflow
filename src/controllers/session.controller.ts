@@ -215,12 +215,17 @@ router.get('/customer/table/:token', (req: Request, res: Response) => {
     };
     db.insert('table_sessions', session);
     db.forceSave();
+  } else if (!session.customer_session_token) {
+    // Ensure existing active session has customer_session_token populated
+    session.customer_session_token = session.session_token || clientToken || uuid();
+    db.update('table_sessions', session.id, { customer_session_token: session.customer_session_token });
+    db.forceSave();
   }
 
   // CRITICAL: The authoritative customer token is ALWAYS the one stored on the session,
   // not the client's browser UUID. This ensures consistent order isolation even after
   // page refreshes, incognito windows, or shared devices.
-  const authorizedToken = session.customer_session_token as string;
+  const authorizedToken = (session.customer_session_token || session.session_token || clientToken) as string;
 
   // 8. Fetch categories for this restaurant
   const categories = db.find('categories', (c: any) => c.restaurant_id === restaurant.id && c.status === 'active') as any[];
@@ -236,13 +241,22 @@ router.get('/customer/table/:token', (req: Request, res: Response) => {
   });
 
   // 10. STRICT CUSTOMER ORDER ISOLATION:
-  // Use the SESSION'S authoritative token (server-generated), NOT the client's browser UUID.
-  // This ensures isolation even if the same physical device or browser is shared between customers.
+  // Find all table sessions associated with this customer token
+  const customerSessionIds = new Set(
+    (db.find('table_sessions', (s: any) => 
+      s.table_id === table.id && 
+      (s.customer_session_token === authorizedToken || s.session_token === authorizedToken)
+    ) as any[]).map(s => s.id)
+  );
+
   const myActiveOrders = (db.find('orders', (o: any) =>
     o.table_id === table.id &&
-    o.table_session_id === session.id &&
-    o.customer_session_token === authorizedToken &&
-    !['completed', 'delivered', 'cancelled'].includes(o.status)
+    !['completed', 'delivered', 'cancelled'].includes(o.status) &&
+    (
+      o.customer_session_token === authorizedToken ||
+      o.customer_token === authorizedToken ||
+      (o.table_session_id && (o.table_session_id === session.id || customerSessionIds.has(o.table_session_id)))
+    )
   ) as any[]).map((o: any) => {
     const items = db.find('order_items', (oi: any) => oi.order_id === o.id);
     return { ...o, items };
@@ -251,8 +265,13 @@ router.get('/customer/table/:token', (req: Request, res: Response) => {
   // Check if this specific customer token has any orders (active or completed) 
   // so the frontend knows whether to show a "View Bill" button even if active orders are 0.
   const hasHistoricalOrders = db.find('orders', (o: any) => 
-    o.customer_session_token === authorizedToken && 
-    o.status !== 'cancelled'
+    o.table_id === table.id && 
+    o.status !== 'cancelled' &&
+    (
+      o.customer_session_token === authorizedToken || 
+      o.customer_token === authorizedToken ||
+      (o.table_session_id && customerSessionIds.has(o.table_session_id))
+    )
   ).length > 0;
 
   res.json({
@@ -260,20 +279,20 @@ router.get('/customer/table/:token', (req: Request, res: Response) => {
       id: restaurant.id,
       name: restaurant.name,
       slug: restaurant.slug,
-      logo: restaurant.logo,
-      cover_image: restaurant.cover_image,
-      description: restaurant.description,
-      phone: restaurant.phone,
-      whatsapp: restaurant.whatsapp,
-      address: restaurant.address,
-      city: restaurant.city,
+      logo: restaurant.logo || '',
+      cover_image: restaurant.cover_image || '',
+      description: restaurant.description || '',
+      phone: restaurant.phone || '',
+      whatsapp: restaurant.whatsapp || '',
+      address: restaurant.address || '',
+      city: restaurant.city || '',
       is_open: restaurant.is_open,
       accept_orders: restaurant.accept_orders,
       opening_time: restaurant.opening_time,
       closing_time: restaurant.closing_time,
-      tax_rate: restaurant.tax_rate,
-      service_charge_rate: restaurant.service_charge_rate,
-      currency: restaurant.currency,
+      tax_rate: restaurant.tax_rate || 0,
+      service_charge_rate: restaurant.service_charge_rate || 0,
+      currency: restaurant.currency || 'PKR',
     },
     table: {
       id: table.id,
@@ -315,12 +334,24 @@ router.get('/table/:token/bill', (req: Request, res: Response) => {
     return;
   }
 
+  // Find all table sessions associated with this customer token
+  const customerSessionIds = new Set(
+    (db.find('table_sessions', (s: any) => 
+      s.table_id === table.id && 
+      (s.customer_session_token === clientToken || s.session_token === clientToken)
+    ) as any[]).map(s => s.id)
+  );
+
   // Find ALL orders for this specific customer at this table (across any active or closed sessions)
   // This ensures that even if a session was closed and a new one was started, the customer sees their full bill.
   const customerOrders = (db.find('orders', (o: any) =>
     o.table_id === table.id &&
-    o.customer_session_token === clientToken &&
-    o.status !== 'cancelled'
+    o.status !== 'cancelled' &&
+    (
+      o.customer_session_token === clientToken ||
+      o.customer_token === clientToken ||
+      (o.table_session_id && customerSessionIds.has(o.table_session_id))
+    )
   ) as any[]).map((o: any) => {
     const items = db.find('order_items', (oi: any) => oi.order_id === o.id);
     return { ...o, items };
@@ -332,21 +363,26 @@ router.get('/table/:token/bill', (req: Request, res: Response) => {
   }
 
   // Get the most recent session ID from the orders for socket connection
-  const latestOrderId = customerOrders[customerOrders.length - 1].table_session_id;
+  const latestOrderId = customerOrders[customerOrders.length - 1].table_session_id || table.id;
 
   res.json({
     restaurant: {
       id: restaurant.id,
       name: restaurant.name,
-      logo: restaurant.logo,
-      currency: restaurant.currency,
+      logo: restaurant.logo || '',
+      address: restaurant.address || '',
+      city: restaurant.city || '',
+      phone: restaurant.phone || '',
+      tax_rate: restaurant.tax_rate || 0,
+      service_charge_rate: restaurant.service_charge_rate || 0,
+      currency: restaurant.currency || 'PKR',
     },
     table: {
       id: table.id,
       table_number: table.table_number,
     },
     session: {
-      id: latestOrderId
+      id: latestOrderId,
     },
     current_orders: customerOrders, // Includes ALL active and completed orders for this customer
   });
