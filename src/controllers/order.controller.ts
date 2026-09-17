@@ -506,10 +506,43 @@ router.patch('/restaurants/:restaurantId/bill-requests/:orderId/dismiss', verify
 
   db.update('orders', order.id, {
     bill_status: 'dismissed',
+    bill_requested: false,
   });
   db.forceSave();
 
+  const io = (global as any).__io;
+  if (io) {
+    io.to(`restaurant_${req.params.restaurantId}`).emit('bill:dismissed', { order_id: order.id });
+    io.emit('bill:dismissed', { order_id: order.id });
+  }
+
   res.json({ success: true, message: 'Bill request dismissed.' });
+});
+
+// POST /api/restaurants/:restaurantId/bill-requests/dismiss-all (Dismiss all pending bill requests)
+router.post('/restaurants/:restaurantId/bill-requests/dismiss-all', verifyToken, requireRestaurant, (req: AuthRequest, res: Response) => {
+  const restaurantId = req.params.restaurantId;
+  const pending = db.find('orders', (o: any) =>
+    o.restaurant_id === restaurantId &&
+    o.bill_requested === true &&
+    o.bill_status !== 'dismissed'
+  ) as any[];
+
+  for (const o of pending) {
+    db.update('orders', o.id, {
+      bill_status: 'dismissed',
+      bill_requested: false,
+    });
+  }
+  db.forceSave();
+
+  const io = (global as any).__io;
+  if (io) {
+    io.to(`restaurant_${restaurantId}`).emit('bill:dismissed_all', { restaurant_id: restaurantId });
+    io.emit('bill:dismissed_all', { restaurant_id: restaurantId });
+  }
+
+  res.json({ success: true, message: 'All bill requests dismissed.', count: pending.length });
 });
 
 // GET /api/restaurants/:restaurantId/orders (Staff/Owner protected list)
@@ -517,36 +550,61 @@ router.get('/restaurants/:restaurantId/orders', verifyToken, requireRole('super_
   let orders = db.find('orders', (o: any) => o.restaurant_id === req.params.restaurantId) as any[];
 
   // Filter parameters
-  const { date_filter, from_date, to_date, status, order_type, search, start_date, end_date } = req.query;
-  const now = new Date();
+  const { date_filter, from_date, to_date, status, order_type, search, start_date, end_date, tz_offset } = req.query;
+
+  // Timezone offset in minutes passed from client browser (e.g., -300 for PKT GMT+5)
+  const clientOffset = typeof tz_offset === 'string' ? parseInt(tz_offset, 10) : 0;
+  const clientNow = new Date(Date.now() - clientOffset * 60000);
+  const clientTodayStr = clientNow.toISOString().slice(0, 10);
+  const clientYesterday = new Date(clientNow.getTime() - 24 * 60 * 60 * 1000);
+  const clientYesterdayStr = clientYesterday.toISOString().slice(0, 10);
+  const utcTodayStr = new Date().toISOString().slice(0, 10);
+
+  // Helper to get order's calendar date in client timezone
+  const getOrderClientDate = (createdAt: string) => {
+    try {
+      const orderMs = new Date(createdAt).getTime();
+      return new Date(orderMs - clientOffset * 60000).toISOString().slice(0, 10);
+    } catch (e) {
+      return createdAt ? createdAt.slice(0, 10) : '';
+    }
+  };
 
   if (from_date || to_date) {
     if (from_date) {
-      const fromStr = `${from_date}T00:00:00.000Z`;
-      orders = orders.filter((o: any) => o.created_at >= fromStr || o.created_at >= (from_date as string));
+      const fromStr = (from_date as string).includes('T')
+        ? (from_date as string)
+        : `${from_date}T00:00:00.000Z`;
+      orders = orders.filter((o: any) => o.created_at >= fromStr || getOrderClientDate(o.created_at) >= (from_date as string));
     }
     if (to_date) {
-      const toStr = `${to_date}T23:59:59.999Z`;
-      orders = orders.filter((o: any) => o.created_at <= toStr);
+      const toStr = (to_date as string).includes('T')
+        ? (to_date as string)
+        : `${to_date}T23:59:59.999Z`;
+      orders = orders.filter((o: any) => o.created_at <= toStr || getOrderClientDate(o.created_at) <= (to_date as string));
     }
-  } else if (date_filter === 'today' || (!date_filter && !start_date)) {
-    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
-    orders = orders.filter((o: any) => o.created_at >= todayStart);
+  } else if (date_filter === 'today' || (!date_filter && !start_date && date_filter !== 'all')) {
+    // Correctly match ALL orders placed today in either client's local calendar day OR server UTC day
+    orders = orders.filter((o: any) => {
+      const orderClientDate = getOrderClientDate(o.created_at);
+      const orderUtcDate = o.created_at ? o.created_at.slice(0, 10) : '';
+      return orderClientDate === clientTodayStr || orderUtcDate === utcTodayStr;
+    });
   } else if (date_filter === 'yesterday') {
-    const yesterday = new Date(now);
-    yesterday.setDate(yesterday.getDate() - 1);
-    const yStart = new Date(yesterday.getFullYear(), yesterday.getMonth(), yesterday.getDate()).toISOString();
-    const yEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
-    orders = orders.filter((o: any) => o.created_at >= yStart && o.created_at < yEnd);
+    orders = orders.filter((o: any) => {
+      const orderClientDate = getOrderClientDate(o.created_at);
+      return orderClientDate === clientYesterdayStr;
+    });
   } else if (date_filter === 'week') {
-    const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
+    const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
     orders = orders.filter((o: any) => o.created_at >= weekAgo);
   } else if (date_filter === 'month') {
-    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
-    orders = orders.filter((o: any) => o.created_at >= monthStart);
+    const monthStartStr = `${clientTodayStr.slice(0, 7)}-01`;
+    orders = orders.filter((o: any) => getOrderClientDate(o.created_at) >= monthStartStr);
   } else if (start_date && end_date) {
     orders = orders.filter((o: any) => o.created_at >= start_date && o.created_at <= end_date);
   }
+  // If date_filter === 'all', all orders across all dates are returned without date restriction
 
   if (status && status !== 'all') {
     orders = orders.filter((o: any) => o.status === status);
@@ -560,9 +618,9 @@ router.get('/restaurants/:restaurantId/orders', verifyToken, requireRole('super_
   }
 
   if (search) {
-    const s = (search as string).toLowerCase();
+    const s = (search as string).toLowerCase().trim();
     orders = orders.filter((o: any) =>
-      o.order_number.toLowerCase().includes(s) ||
+      (o.order_number && o.order_number.toLowerCase().includes(s)) ||
       (o.customer_name && o.customer_name.toLowerCase().includes(s)) ||
       (o.customer_phone && o.customer_phone.toLowerCase().includes(s))
     );
@@ -586,9 +644,30 @@ router.get('/restaurants/:restaurantId/orders', verifyToken, requireRole('super_
 
 // GET /api/restaurants/:restaurantId/orders/stats (Staff/Owner KPIs)
 router.get('/restaurants/:restaurantId/orders/stats', verifyToken, requireRole('super_admin', 'restaurant_owner', 'kitchen_staff'), requireRestaurant, (req: AuthRequest, res: Response) => {
-  const now = new Date();
-  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
-  const todayOrders = db.find('orders', (o: any) => o.restaurant_id === req.params.restaurantId && o.created_at >= todayStart) as any[];
+  const { tz_offset, from_date, to_date } = req.query;
+  const clientOffset = typeof tz_offset === 'string' ? parseInt(tz_offset, 10) : 0;
+  const clientNow = new Date(Date.now() - clientOffset * 60000);
+  const clientTodayStr = clientNow.toISOString().slice(0, 10);
+  const utcTodayStr = new Date().toISOString().slice(0, 10);
+
+  const getOrderClientDate = (createdAt: string) => {
+    try {
+      const orderMs = new Date(createdAt).getTime();
+      return new Date(orderMs - clientOffset * 60000).toISOString().slice(0, 10);
+    } catch (e) {
+      return createdAt ? createdAt.slice(0, 10) : '';
+    }
+  };
+
+  const todayOrders = db.find('orders', (o: any) => {
+    if (o.restaurant_id !== req.params.restaurantId) return false;
+    if (from_date && to_date) {
+      return o.created_at >= (from_date as string) && o.created_at <= (to_date as string);
+    }
+    const orderClientDate = getOrderClientDate(o.created_at);
+    const orderUtcDate = o.created_at ? o.created_at.slice(0, 10) : '';
+    return orderClientDate === clientTodayStr || orderUtcDate === utcTodayStr;
+  }) as any[];
 
   const stats = {
     total: todayOrders.length,
